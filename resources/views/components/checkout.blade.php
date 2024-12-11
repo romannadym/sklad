@@ -27,7 +27,7 @@
         <div class="box-body">
           <!-- Asset -->
             @include ('partials.forms.edit.asset-select', ['translated_name' => trans('general.select_asset'), 'fieldname' => 'asset_id'])
-            @include ('partials.forms.edit.user-select', ['translated_name' => trans('Выдать инженеру'), 'fieldname' => 'assigned_to_user_id', 'label' => trans('Выдать инженеру')])
+            @include ('partials.forms.edit.user-select', ['translated_name' => trans('Инженер'), 'fieldname' => 'assigned_to_user_id', 'label' => trans('Инженер')])
             <div class="form-group {{ $errors->has('assigned_qty') ? ' has-error' : '' }}">
               <label for="assigned_qty" class="col-md-3 control-label">
                 {{ trans('general.qty') }}
