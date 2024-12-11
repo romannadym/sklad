@@ -26,3 +26,48 @@
 
     {!! $errors->first('category_type', '<div class="col-md-8 col-md-offset-3"><span class="alert-msg" aria-hidden="true"><i class="fas fa-times" aria-hidden="true"></i> :message</span></div>') !!}
 </div>
+
+<script>
+  
+               // Функция для загрузки категорий
+               function loadCategories() {
+        var endpoint = "/api/v1/categories/component/selectlist?page=1"; // Укажите ваш API-эндпоинт
+        $.ajax({
+            url: endpoint,
+            type: 'GET',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            dataType: 'json',
+            success: function(data) {
+              //  console.log(data)
+                var $categorySelect = $('#category_select_id');
+                $categorySelect.empty(); // Очистить текущее содержимое
+                $categorySelect.append($('<option>', {
+                    value: '',
+                    text: '{{ trans('general.select_category') }}', // Подсказка для выбора
+                }));
+                $.each(data.results, function(index, item) {
+                    $categorySelect.append($('<option>', {
+                        value: item.id,
+                        text: item.text,
+                    }));
+                });
+                // Проверка выбранной категории
+            var selectedCategoryId = "{{ old($fieldname, (isset($item)) ? $item->{$fieldname} : '') }}";
+        //    console.log("Selected category ID before check: ", selectedCategoryId); // Отладка
+            if (selectedCategoryId) {
+             //   console.log("Setting selected value to: ", selectedCategoryId); // Отладка
+                $categorySelect.val(selectedCategoryId).trigger('change');
+            }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error loading categories:', error);
+            }
+        });
+    }
+
+    // Вызов функции загрузки категорий
+    loadCategories();// Загрузка категорийв списоквыборакатегорийв полеввода.
+
+</script>

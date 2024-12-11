@@ -8,7 +8,6 @@ use App\Models\User;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Log;
 class ComponentsTransformer
 {
     public function transformComponents(Collection $components, $total)
@@ -75,7 +74,6 @@ class ComponentsTransformer
     {
         $array = [];
         foreach ($components_assets as $asset) {
-            Log::info('Это тестовое сообщение для проверки логирования.');
            $user = User::find($asset->pivot->assigned_to_user_id);
 
             $array[] = [

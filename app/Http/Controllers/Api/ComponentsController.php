@@ -354,5 +354,34 @@ class ComponentsController extends Controller
 
     
     }
+    public function search(Request $request)
+    {
+        $this->authorize('view', Component::class);
+        $query = $request->input('query'); // Получение параметра запроса
+        $filter = $request->input('filter'); // Получение параметра фильтрации
+        $components = [];
+        if($filter == 'all')
+        {
+            $components = Component::where('name', 'LIKE', "%{$query}%")
+            ->orWhere('partnum', 'LIKE', "%{$query}%")
+           // ->limit(10)
+            ->get(['id', 'name','category_id','partnum']); // Поиск по имени
+        }
+        if($filter == 'name')
+        {
+            $components = Component::where('name', 'LIKE', "%{$query}%")
+           // ->limit(10)
+            ->get(['id', 'name','category_id','partnum']); // Поиск по имени
+        }
+        if($filter == 'partnum')
+        {
+            $components = Component::where('partnum', 'LIKE', "%{$query}%")
+           // ->limit(10)
+            ->get(['id', 'name','category_id','partnum']); // Поиск по имени
+        }
+        
+
+        return response()->json($components); // Возврат данных в формате JSON
+    }
 
 }

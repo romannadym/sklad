@@ -230,8 +230,12 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'throttle:api']], functi
             'getAssets'
         ]
         )->name('api.components.assets');
+        Route::get('search', [Api\ComponentsController::class, 'search'])->name('api.components.search');
+       
+        
 
       });
+      
     Route::post('components/{id}/checkin',
         [
             Api\ComponentsController::class,
@@ -245,7 +249,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'throttle:api']], functi
             'checkout'
         ]
     )->name('api.components.checkout');
-
+    
 
       Route::resource('components', 
         Api\ComponentsController::class,

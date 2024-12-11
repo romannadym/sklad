@@ -1,0 +1,14 @@
+2024-10-29 19:10:05,483 CRIT Supervisor is running as root.  Privileges were not dropped because no user is specified in the config file.  If you intend to run as root, you can set user=root in the config file to avoid this message.
+2024-10-29 19:10:05,484 INFO supervisord started with pid 1
+2024-10-29 19:10:06,487 INFO spawned: 'exit_on_any_fatal' with pid 128
+2024-10-29 19:10:06,490 INFO spawned: 'apache' with pid 129
+2024-10-29 19:10:06,492 INFO spawned: 'run_schedule' with pid 130
+2024-10-29 19:10:07,570 INFO success: exit_on_any_fatal entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-10-29 19:10:07,570 INFO success: apache entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-10-29 19:10:07,570 INFO success: run_schedule entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-10-29 19:12:09,527 INFO reaped unknown pid 483 (terminated by SIGHUP)
+2024-10-29 19:12:15,535 WARN received SIGTERM indicating exit request
+2024-10-29 19:12:15,536 INFO waiting for exit_on_any_fatal, apache, run_schedule to die
+2024-10-29 19:12:16,537 INFO stopped: run_schedule (terminated by SIGTERM)
+2024-10-29 19:12:16,555 INFO stopped: apache (terminated by SIGTERM)
+2024-10-29 19:12:16,558 INFO stopped: exit_on_any_fatal (terminated by SIGTERM)

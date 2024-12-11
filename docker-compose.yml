@@ -14,6 +14,7 @@ services:
       - ./resources:/var/www/html/resources
       - ./database:/var/www/html/database
       - ./config:/var/www/html/config
+      - ./routes:/var/www/html/routes
       - ./storage/logs:/var/www/html/storage/logs
     ports:
       - "${APP_PORT:-8000}:80"
