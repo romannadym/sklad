@@ -335,7 +335,7 @@ class AssetPresenter extends Presenter
             'searchable' => false,
             'sortable' => false,
             'switchable' => false,
-            'title' => trans('general.checkin').'/'.trans('general.checkout'),
+            'title' => trans('general.checkout'),//trans('general.checkin').'/'.trans('general.checkout'),
             'visible' => true,
             'formatter' => 'hardwareInOutFormatter',
         ];
