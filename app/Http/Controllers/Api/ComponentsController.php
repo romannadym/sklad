@@ -50,7 +50,10 @@ class ComponentsController extends Controller
             ];
 
         $components = Component::select('components.*')
-            ->with('company', 'location', 'category', 'assets', 'supplier', 'adminuser');
+            ->with('company', 'location', 'category', 'assets', 'supplier', 'adminuser')
+            ->whereRaw('qty - (SELECT IFNULL(SUM(assigned_qty), 0) 
+                        FROM components_assets 
+                        WHERE components_assets.component_id = components.id) > 0'); // Условие для остатка
 
         if ($request->filled('search')) {
             $components = $components->TextSearch($request->input('search'));
@@ -111,7 +114,7 @@ class ComponentsController extends Controller
 
         $total = $components->count();
         $components = $components->skip($offset)->take($limit)->get();
-
+       // Log::error('Значение переменной:', ['variable' =>$components]);
         return (new ComponentsTransformer)->transformComponents($components, $total);
     }
 
@@ -371,13 +374,13 @@ class ComponentsController extends Controller
         {
             $components = Component::where('name', 'LIKE', "%{$query}%")
            // ->limit(10)
-            ->get(['id', 'name','category_id','partnum']); // Поиск по имени
+           ->groupBy('name')->get(['id', 'name','category_id','partnum']); // Поиск по имени
         }
         if($filter == 'partnum')
         {
             $components = Component::where('partnum', 'LIKE', "%{$query}%")
            // ->limit(10)
-            ->get(['id', 'name','category_id','partnum']); // Поиск по имени
+           ->groupBy('name')->get(['id', 'name','category_id','partnum']); // Поиск по имени
         }
         
 

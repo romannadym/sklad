@@ -266,7 +266,7 @@ return [
     'select_date'			=> 'Выберите дату (ГГГГ-ММ-ДД)',
     'select_statuslabel'	=> 'Выбрать статус',
     'select_company'    	=> 'Выберите компанию',
-    'select_asset'    		=> 'Выбрать актив',
+    'select_asset'    		=> 'Заказчик',
     'settings'				=> 'Настройки',
     'show_deleted'  		=> 'Просмотр удаленных',
     'show_current'  		=> 'Показать текущий',

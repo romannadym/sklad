@@ -537,6 +537,7 @@ class AssetsController extends Controller
      * @since [v4.0.16]
      * @see \App\Http\Transformers\SelectlistTransformer
      */
+    
     public function selectlist(Request $request) : array
     {
 
@@ -555,7 +556,7 @@ class AssetsController extends Controller
         }
 
         if ($request->filled('search')) {
-            $assets = $assets->AssignedSearch($request->input('search'));
+            //$assets = $assets->AssignedSearch($request->input('search'));
         }
 
 
@@ -566,9 +567,9 @@ class AssetsController extends Controller
         // they may not have a ->name value but we want to display something anyway
         foreach ($assets as $asset) {
 
-
-            $asset->use_text = $asset->present()->fullName;
-
+           // Log::error('Значение переменной:', ['variable' =>$asset->present()->name]);
+            $asset->use_text = $asset->present()->name;
+            
             if (($asset->checkedOutToUser()) && ($asset->assigned)) {
                 $asset->use_text .= ' → '.$asset->assigned->getFullNameAttribute();
             }
@@ -580,7 +581,7 @@ class AssetsController extends Controller
 
             $asset->use_image = ($asset->getImageUrl()) ? $asset->getImageUrl() : null;
         }
-
+        
         return (new SelectlistTransformer)->transformSelectlist($assets);
     }
 
