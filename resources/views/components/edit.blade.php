@@ -16,7 +16,7 @@
 @section('inputFields')
 
 @include ('partials.forms.edit.name', ['translated_name' => trans('admin/components/table.title')])
-@include ('partials.forms.edit.category-select', ['translated_name' => trans('general.category'), 'fieldname' => 'category_id','category_type' => 'component'])
+{{-- @include ('partials.forms.edit.category-select', ['translated_name' => trans('general.category'), 'fieldname' => 'category_id','category_type' => 'component']) --}}
 @include ('partials.forms.edit.quantity')
 {{--@include ('partials.forms.edit.minimum_quantity')--}}
 @include ('partials.forms.edit.serial', ['fieldname' => 'serial'])
