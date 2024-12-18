@@ -71,7 +71,7 @@ class ComponentsController extends Controller
         $this->authorize('create', Component::class);
         $component = new Component();
         $component->name                   = $request->input('name');
-        $component->category_id            = $request->input('category_id');
+        $component->category_id            = 1;//$request->input('category_id');
         $component->supplier_id            = $request->input('supplier_id');
         $component->location_id            = $request->input('location_id');
         $component->company_id             = Company::getIdForCurrentUser($request->input('company_id'));
@@ -150,7 +150,7 @@ class ComponentsController extends Controller
 
         // Update the component data
         $component->name                   = $request->input('name');
-        $component->category_id            = $request->input('category_id');
+        $component->category_id            = 1;//$request->input('category_id');
         $component->supplier_id            = $request->input('supplier_id');
         $component->location_id            = $request->input('location_id');
         $component->company_id             = Company::getIdForCurrentUser($request->input('company_id'));
