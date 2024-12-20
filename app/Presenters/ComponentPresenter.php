@@ -160,7 +160,6 @@ class ComponentPresenter extends Presenter
                 'formatter' => 'dateDisplayFormatter',
             ],
         ];
-
         $layout[] = [
             'field' => 'checkincheckout',
             'searchable' => false,

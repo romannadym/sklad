@@ -556,7 +556,7 @@ class AssetsController extends Controller
         }
 
         if ($request->filled('search')) {
-            //$assets = $assets->AssignedSearch($request->input('search'));
+            $assets = $assets->AssignedSearch($request->input('search'));
         }
 
 

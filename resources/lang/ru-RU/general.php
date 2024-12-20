@@ -79,7 +79,7 @@ return [
     'country'  				=> 'Страна',
     'could_not_restore'     => 'Ошибка восстановления :item_type: :error',
     'not_deleted'           => ':item_type не был удален и поэтому не может быть восстановлен',
-    'create'				=> 'Создать нового',
+    'create'				=> 'Создать',
     'created'               => 'Элемент создан',
     'created_asset'			=> 'Создать заказчика',
     'created_at' 			=> 'Создано в',

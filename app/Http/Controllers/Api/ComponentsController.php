@@ -365,20 +365,20 @@ class ComponentsController extends Controller
         $components = [];
         if($filter == 'all')
         {
-            $components = Component::where('name', 'LIKE', "%{$query}%")
+            $components = Component::withTrashed()->where('name', 'LIKE', "%{$query}%")
             ->orWhere('partnum', 'LIKE', "%{$query}%")
            // ->limit(10)
             ->get(['id', 'name','category_id','partnum']); // Поиск по имени
         }
         if($filter == 'name')
         {
-            $components = Component::where('name', 'LIKE', "%{$query}%")
+            $components = Component::withTrashed()->where('name', 'LIKE', "%{$query}%")
            // ->limit(10)
            ->groupBy('name')->get(['id', 'name','category_id','partnum']); // Поиск по имени
         }
         if($filter == 'partnum')
         {
-            $components = Component::where('partnum', 'LIKE', "%{$query}%")
+            $components = Component::withTrashed()->where('partnum', 'LIKE', "%{$query}%")
            // ->limit(10)
            ->groupBy('name')->get(['id', 'name','category_id','partnum']); // Поиск по имени
         }
