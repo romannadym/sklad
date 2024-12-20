@@ -81,7 +81,7 @@
                                 printWindow.print();
                         }
 
-                    });
+                    }); 
                 </script>
                 @endif
             </div><!-- /.btn-group -->
