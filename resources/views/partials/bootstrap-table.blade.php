@@ -771,7 +771,7 @@
    function imageFormatter(value, row) {
 
         if (value) {
-
+          
             // This is a clunky override to handle unusual API responses where we're presenting a link instead of an array
             if (row.avatar) {
                 var altName = '';
@@ -782,7 +782,8 @@
             else if ((row) && (row.model)) {
                 var altName = row.model.name;
            }
-            return '<a href="' + value + '" data-toggle="lightbox" data-type="image"><img src="' + value + '" style="max-height: {{ $snipeSettings->thumbnail_max_h }}px; width: auto;" class="img-responsive" alt="' + altName + '"></a>';
+           // return '<a href="' + value + '" data-toggle="lightbox" data-type="image"><img src="' + value + '" style="max-height: {{ $snipeSettings->thumbnail_max_h }}px; width: auto;" class="img-responsive" alt="' + altName + '"></a>';
+           return value;
         }
     }
     function downloadFormatter(value) {
@@ -968,6 +969,7 @@
 
 
         });
+       
     });
 
 </script>

@@ -31,7 +31,7 @@
 @include ('partials.forms.edit.purchase_date')
 {{--@include ('partials.forms.edit.purchase_cost')--}}
 @include ('partials.forms.edit.notes')
-@include ('partials.forms.edit.image-upload', ['image_path' => app('components_upload_path')])
+@include ('partials.forms.edit.image-component-upload', ['image_path' => app('components_upload_path')])
 
 
 @stop

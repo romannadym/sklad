@@ -22,10 +22,16 @@ class ComponentsTransformer
 
     public function transformComponent(Component $component)
     {
+        if(is_array(json_decode($component->image)) && !empty($component->image)){
+            $images = [];
+            foreach( json_decode($component->image) as $image) {
+                $images[] = Storage::disk('public')->url('components/'.e($image));
+            }
+        }
         $array = [
             'id' => (int) $component->id,
             'name' => e($component->name),
-            'image' =>   ($component->image) ? Storage::disk('public')->url('components/'.e($component->image)) : null,
+            'image' =>   (isset($images) && is_array($images) && !empty($images)) ? "<a href='#' class='images' data-images='".json_encode($images)."'>Фото</a>" : null,
             'serial' => ($component->serial) ? e($component->serial) : null,
 	    'partnum' => ($component->partnum) ? e($component->partnum) : null,
 	    'status' => ($component->status) ? e($component->status) : null,

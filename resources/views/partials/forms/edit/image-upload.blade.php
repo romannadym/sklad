@@ -14,8 +14,8 @@
         <div class="col-md-9 col-md-offset-3">
             <img src="{{ Storage::disk('public')->url($image_path.e($item->{($fieldname ?? 'image')})) }}" class="img-responsive">
             {!! $errors->first('image_delete', '<span class="alert-msg">:message</span>') !!}
-        </div>
-    </div>
+        </div> 
+    </div> 
 @endif
 
 <!-- Image Upload and preview -->

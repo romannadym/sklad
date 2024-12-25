@@ -247,13 +247,129 @@
 
   <!-- side address column -->
   <div class="col-md-3">
-    @if ($component->image!='')
-      <div class="col-md-12 text-center" style="padding-bottom: 15px;">
-        <a href="{{ Storage::disk('public')->url('components/'.e($component->image)) }}" data-toggle="lightbox">
-          <img src="{{ Storage::disk('public')->url('components/'.e($component->image)) }}" class="img-responsive img-thumbnail" alt="{{ $component->name }}"></a>
-      </div>
+   
+  @if ($component->image != '')
+<style>
+   /* Стилизация слайдера */
+.slider {
+    position: relative;
+    max-width: 800px;
+    margin: 20px auto;
+}
 
-    @endif
+.slides {
+    display: flex;
+    overflow: hidden;
+}
+
+.slide {
+    max-height: 400px;
+    width: 100%;
+    display: none;
+}
+
+.slide.active {
+    display: block;
+}
+
+.slide img {
+  max-height: 400px;
+    width: 100%;
+    height: auto;
+}
+
+
+.navigation {
+            position:relative;
+            
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            
+        }
+
+        .button {
+            background-color: rgba(255, 255, 255, 0.8); /* Полупрозрачный фон для кнопок */
+            border: none;
+            cursor: pointer;
+            padding: 7px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+</style>
+<div id="componentCarousel" class="slider">
+    <div class="slides">
+        @foreach ($component->image as $index => $image)
+            <div class="slide {{ $index === 0 ? 'active' : '' }}">
+                <img src="{{ Storage::disk('public')->url('components/' . e($image)) }}"
+                 class="d-block w-100 img-thumbnail" 
+                 data-target="#imageModal" 
+                 data-image="{{ Storage::disk('public')->url('components/' . e($image)) }}"
+                 alt="{{ $component->name }}">
+            </div>
+        @endforeach
+    </div>
+    <div class="navigation">
+        <button class="button" onclick="plusSlides(-1)"> Предыдущее</button>
+        <div style="padding: 5px;">Кол-во: {{ count($component->image ) }}</div>
+        <button class="button" onclick="plusSlides(1)"> Следующее </button>
+    </div>
+</div>
+<!-- Модальное окно для увеличения изображения -->
+
+<link rel="stylesheet" href="{{ url(asset('js/bootstrap/css/bootstrap.css')) }}">
+    <script src="{{ url(asset('js/jquery.js')) }}" nonce="{{ csrf_token() }}"></script>
+    <script src="{{ url(asset('js/bootstrap/js/bootstrap.js')) }}" nonce="{{ csrf_token() }}"></script>
+<div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageModalLabel">Просмотр изобоажения</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="modalImage" src="" class="img-fluid" alt="" style="max-width: 100%; cursor: pointer;" >
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Подключение jQuery -->
+
+
+<script>
+    $(document).ready(function() {
+        $('.slide img').on('click', function() {
+            var imageSrc = $(this).data('image');
+            
+            $('#modalImage').attr('src', imageSrc);
+            $('#imageModal').modal('show');
+        });
+    });
+</script>
+
+
+<script>
+// Функция для смены слайдов
+function plusSlides(n) {
+    var slides = document.querySelectorAll(".slide");
+    var currentSlide = Array.from(slides).findIndex(slide => slide.classList.contains("active"));
+    var newIndex = currentSlide + n;
+
+    if (newIndex < 0) {
+        newIndex = slides.length - 1;
+    } else if (newIndex >= slides.length) {
+        newIndex = 0;
+    }
+
+    slides.forEach(slide => slide.classList.remove("active"));
+    slides[newIndex].classList.add("active");
+}
+</script>
+@endif
+
+
 
     @if ($component->serial!='')
     <div class="col-md-12" style="padding-bottom: 5px;"><strong>{{ trans('admin/hardware/form.serial') }}: </strong>

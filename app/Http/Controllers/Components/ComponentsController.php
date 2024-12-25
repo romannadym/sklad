@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Components;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\ImageUploadRequest;
+use App\Http\Requests\ImageComponentUploadRequest;
 use App\Models\Company;
 use App\Models\Component;
 use App\Helpers\Helper;
@@ -62,11 +62,11 @@ class ComponentsController extends Controller
      * @author [A. Gianotto] [<snipe@snipe.net>]
      * @see ComponentsController::getCreate() method that generates the view
      * @since [v3.0]
-     * @param ImageUploadRequest $request
+     * @param ImageComponentUploadRequest $request
      * @return \Illuminate\Http\RedirectResponse
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function store(ImageUploadRequest $request)
+    public function store(ImageComponentUploadRequest $request)
     {
         $this->authorize('create', Component::class);
         $component = new Component();
@@ -111,7 +111,7 @@ class ComponentsController extends Controller
     {
         if ($item = Component::find($componentId)) {
             $this->authorize('update', $item);
-
+            $item->image = json_decode($item->image);
             return view('components/edit', compact('item'))->with('category_type', 'component');
         }
 
@@ -124,13 +124,13 @@ class ComponentsController extends Controller
      *
      * @author [A. Gianotto] [<snipe@snipe.net>]
      * @see ComponentsController::getEdit() method presents the form.
-     * @param ImageUploadRequest $request
+     * @param ImageComponentUploadRequest $request
      * @param int $componentId
      * @return \Illuminate\Http\RedirectResponse
      * @throws \Illuminate\Auth\Access\AuthorizationException
      * @since [v3.0]
      */
-    public function update(ImageUploadRequest $request, $componentId = null)
+    public function update(ImageComponentUploadRequest $request, $componentId = null)
     {
         if (is_null($component = Component::find($componentId))) {
             return redirect()->route('components.index')->with('error', trans('admin/components/message.does_not_exist'));
@@ -163,8 +163,8 @@ class ComponentsController extends Controller
         $component->notes                  = $request->input('notes');
         $component->partnum                  = $request->input('partnum');
         $component->status                  = $request->input('status');
-	$component->customer                  = $request->input('customer');
-	$component = $request->handleImages($component);
+        $component->customer                  = $request->input('customer');
+        $component = $request->handleImages($component);
 
         session()->put(['redirect_option' => $request->get('redirect_option')]);
 
@@ -222,7 +222,7 @@ class ComponentsController extends Controller
 
         if (isset($component->id)) {
             $this->authorize('view', $component);
-
+            $component->image = json_decode($component->image);
             return view('components/view', compact('component'));
         }
         // Redirect to the user management page

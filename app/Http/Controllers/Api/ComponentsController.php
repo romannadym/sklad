@@ -113,6 +113,7 @@ class ComponentsController extends Controller
         }
 
         $total = $components->count();
+        
         $components = $components->skip($offset)->take($limit)->get();
        // Log::error('Значение переменной:', ['variable' =>$components]);
         return (new ComponentsTransformer)->transformComponents($components, $total);
