@@ -44,31 +44,66 @@
                             const printContent = `
                                 <html>
                                 <head>
-                                    <title>Печать</title>
-                                    <style>
-                                        body { font-family: Arial, sans-serif; margin: 54px; }
-                                        table { border-collapse: collapse; width: 100%; }
-                                        th, td { border: 1px solid black; padding: 8px; text-align: left; font-size:42px; }
-                                        .header { font-size: 24px; margin-bottom: 20px; }
-                                    </style>
-                                </head>
-                                <body>
-                                    <div class="header"></div>
-                                    <table>
-                                        <tr>
-                                            <th>Партийный номер</th>
-                                            <th>Имя</th>
-                                            <th>Поставка</th>
-                                            <th>Кол-во</th>
-                                        </tr>
-                                        <tr>
-                                            <td>${$('#partnum').val() || 'N/A'}</td>
-                                            <td>${$('#name').val() || 'N/A'}</td>
-                                            <td>${$('#purchase_date').val() || 'N/A'}</td>
-                                            <td>${$('#qty').val() || 'N/A'}</td>
-                                        </tr>
-                                    </table>
-                                </body>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Template</title>
+   <link href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'PT Sans', sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f9f9f9;
+            font-size: 48px;
+        }
+        .container {
+            border: 1px solid #ccc;
+            width: 70%;
+            height: 70%;
+            background-color: #ffffff;
+            border-radius: 5px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .item {
+            margin-bottom: 20px;
+        }
+        .label {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 5px;
+        }
+       
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="item">
+            <span class="label">Партийный номер:</span><br>
+            <span class="value" id="part-number">${$('#partnum').val() || 'N/A'}</span>
+        </div>
+        <div class="item">
+            <span class="label">Имя:</span><br>
+            <span class="value" id="name">${$('#name').val() || 'N/A'}</span>
+        </div>
+        <div class="item">
+            <span class="label">Поставка:</span><br>
+            <span class="value" id="delivery-date">${$('#purchase_date').val() || 'N/A'}</span>
+        </div>
+        <div class="item">
+            <span class="label">Всего:</span><br>
+            <span class="value" id="total">${$('#qty').val() || 'N/A'}</span>
+            <span>шт.</span>
+        </div>
+    </div>
+</body>
                                 </html>
                             `;
 

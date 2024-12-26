@@ -19,7 +19,20 @@
     
     @include ('partials.forms.edit.company-select', ['translated_name' => trans('general.company'), 'fieldname' => 'company_id'])
 
+    <div class="form-group">
+    <label class="col-md-3 control-label"></label>
 
+        <div class="col-md-9 col-sm-9 col-md-offset-3">
+
+        <a id="main_info" class="text-primary">
+            <x-icon type="caret-right" class="fa-2x" id="main_info_icon" />
+            <strong>Информация</strong>
+        </a>
+
+        </div>
+        
+        <div id="main_details" class="col-md-12" style="display:none">
+        <br>
   <!-- Asset Tag -->
   <div class="form-group {{ $errors->has('asset_tag') ? ' has-error' : '' }}">
     <label for="asset_tag" class="col-md-3 control-label">{{ trans('admin/hardware/form.tag') }}</label>
@@ -30,16 +43,16 @@
           <!-- we are editing an existing asset,  there will be only one asset tag -->
           <div class="col-md-7 col-sm-12">
 
-          <input class="form-control" type="text" name="asset_tags[1]" id="asset_tag" value="{{ old('asset_tag', $item->asset_tag) }}" required>
-              {!! $errors->first('asset_tags', '<span class="alert-msg"><i class="fas fa-times"></i> :message</span>') !!}
-              {!! $errors->first('asset_tag', '<span class="alert-msg"><i class="fas fa-times"></i> :message</span>') !!}
+          <input class="form-control" type="text" name="asset_tags[1]" id="asset_tag" value="{{ old('asset_tag', $item->asset_tag) }}" >
+              {!! $errors->first('asset_tags', '<span class="alert-msg"><i class="fas fa-times"></i> Наименование тега должно быть уникальным.</span>') !!}
+              {!! $errors->first('asset_tag', '<span class="alert-msg"><i class="fas fa-times"></i>  Наименование тега должно быть уникальным.</span>') !!}
           </div>
       @else
           <!-- we are creating a new asset - let people use more than one asset tag -->
           <div class="col-md-7 col-sm-12">
-              <input class="form-control" type="text" name="asset_tags[1]" id="asset_tag" value="{{ old('asset_tags.1', \App\Models\Asset::autoincrement_asset()) }}" required>
-              {!! $errors->first('asset_tags', '<span class="alert-msg"><i class="fas fa-times"></i> :message</span>') !!}
-              {!! $errors->first('asset_tag', '<span class="alert-msg"><i class="fas fa-times"></i> :message</span>') !!}
+              <input class="form-control" type="text" name="asset_tags[1]" id="asset_tag" value="{{ old('asset_tags.1', \App\Models\Asset::autoincrement_asset()) }}" >
+              {!! $errors->first('asset_tags', '<span class="alert-msg"><i class="fas fa-times"></i>  Наименование тега должно быть уникальным.</span>') !!}
+              {!! $errors->first('asset_tag', '<span class="alert-msg"><i class="fas fa-times"></i> Наименование тега должно быть уникальным.</span>') !!}
           </div>
           <div class="col-md-2 col-sm-12">
               <button class="add_field_button btn btn-default btn-sm">
@@ -48,16 +61,28 @@
           </div>
       @endif
   </div>
+  <script src="{{ url(asset('js/jquery.js')) }}" nonce="{{ csrf_token() }}"></script>
+  <script>
+ 
+ $(document).ready(function () {
+    $('#company_select').on('change', function () {
+        
+        const selectedCompanyName = $(this).find('option:selected').text(); // Получаем текст выбранной опции
+        console.log(selectedCompanyName);
+        $('#asset_tag').val(selectedCompanyName); // Устанавливаем значение в input
+    });
+});
 
+</script>
     @include ('partials.forms.edit.serial', ['fieldname'=> 'serials[1]', 'old_val_name' => 'serials.1', 'translated_serial' => trans('admin/hardware/form.serial')])
 
     <div class="input_fields_wrap">
     </div>
 
-    @include ('partials.forms.edit.model-select', ['translated_name' => trans('admin/hardware/form.model'), 'fieldname' => 'model_id', 'field_req' => true])
+    @include ('partials.forms.edit.model-select', ['translated_name' => trans('admin/hardware/form.model'), 'fieldname' => 'model_id'])
 
 
-    @include ('partials.forms.edit.status', [ 'required' => 'true'])
+    @include ('partials.forms.edit.status', [ 'required' => 'false'])
     @if (!$item->id)
         @include ('partials.forms.checkout-selector', ['user_select' => 'true','asset_select' => 'true', 'location_select' => 'true', 'style' => 'display:none;'])
         @include ('partials.forms.edit.user-select', ['translated_name' => trans('admin/hardware/form.checkout_to'), 'fieldname' => 'assigned_user', 'style' => 'display:none;', 'required' => 'false'])
@@ -76,7 +101,8 @@
 
     @include ('partials.forms.edit.image-upload', ['image_path' => app('assets_upload_path')])
 
-
+    </div>
+    </div>
     <div id='custom_fields_content'>
         <!-- Custom Fields -->
         @if ($item->model && $item->model->fieldset)
@@ -95,7 +121,7 @@
         @include("models/custom_fields_form",["model" => $model])
         @endif
     </div>
-
+   
     <div class="form-group">
     <label class="col-md-3 control-label"></label>
 
@@ -365,6 +391,12 @@
         });
 
         {{-- TODO: Clean up some of the duplication in here. Not too high of a priority since we only copied it once. --}}
+        $("#main_info").on("click",function(){
+            $('#main_details').fadeToggle(100);
+            $('#main_info_icon').toggleClass('fa-caret-right fa-caret-down');
+            var optional_info_open = $('#main_info_icon').hasClass('fa-caret-down');
+            document.cookie = "main_info_open="+optional_info_open+'; path=/';
+        });
         $("#optional_info").on("click",function(){
             $('#optional_details').fadeToggle(100);
             $('#optional_info_icon').toggleClass('fa-caret-right fa-caret-down');
@@ -382,6 +414,12 @@
         var all_cookies = document.cookie.split(';')
         for(var i in all_cookies) {
             var trimmed_cookie = all_cookies[i].trim(' ')
+            if (trimmed_cookie.startsWith('main_info_open=')) {
+                elems = all_cookies[i].split('=', 2)
+                if (elems[1] == 'true') {
+                    $('#main_info').trigger('click')
+                }
+            }
             if (trimmed_cookie.startsWith('optional_info_open=')) {
                 elems = all_cookies[i].split('=', 2)
                 if (elems[1] == 'true') {
