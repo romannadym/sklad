@@ -26,3 +26,38 @@
 
     {!! $errors->first($fieldname, '<div class="col-md-8 col-md-offset-3"><span class="alert-msg" aria-hidden="true"><i class="fas fa-times" aria-hidden="true"></i> :message</span></div>') !!}
 </div>
+<script>
+ $(document).ready(function () {
+    const defaultModelId = '123'; // ID модели по умолчанию
+    const $selectElement = $('#model_select_id');
+    
+    // Выполняем GET-запрос для получения списка моделей
+    $.ajax({
+        url: "{{ route('api.models.selectlist') }}",
+        dataType: "json",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+        method: 'GET',
+        data: { page: 1 },
+        success: function (response) {
+            if (response.results && Array.isArray(response.results)) {
+                // Добавляем каждую модель в select
+                response.results.forEach(function (model) {
+                    $selectElement.append(new Option(model.text, model.id));
+                });
+                
+                // Устанавливаем значение по умолчанию
+                if ($selectElement.find(`option[value="${defaultModelId}"]`).length > 0) {
+                    $selectElement.val(defaultModelId).trigger('change');
+                }
+            } else {
+                console.error('Ошибка: неверный формат данных.');
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error('Ошибка загрузки данных:', error);
+        }
+    });
+});
+</script>

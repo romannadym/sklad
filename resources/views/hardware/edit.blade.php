@@ -17,8 +17,35 @@
 {{-- Page content --}}
 @section('inputFields')
     
-    @include ('partials.forms.edit.company-select', ['translated_name' => trans('general.company'), 'fieldname' => 'company_id'])
+    
+    <!-- Asset Tag -->
+  <div class="form-group {{ $errors->has('asset_tag') ? ' has-error' : '' }}">
+    <label for="asset_tag" class="col-md-3 control-label">Организация{{-- trans('admin/hardware/form.tag') --}}</label>
 
+
+
+      @if  ($item->id)
+          <!-- we are editing an existing asset,  there will be only one asset tag -->
+          <div class="col-md-7 col-sm-12">
+
+          <input class="form-control" type="text" name="asset_tags[1]" id="asset_tag" value="{{ old('asset_tag', $item->asset_tag) }}" required>
+              {!! $errors->first('asset_tags', '<span class="alert-msg"><i class="fas fa-times"></i> Наименование тега должно быть уникальным.</span>') !!}
+              {!! $errors->first('asset_tag', '<span class="alert-msg"><i class="fas fa-times"></i>  Наименование тега должно быть уникальным.</span>') !!}
+          </div>
+      @else
+          <!-- we are creating a new asset - let people use more than one asset tag -->
+          <div class="col-md-7 col-sm-12">
+              <input class="form-control" type="text" name="asset_tags[1]" id="asset_tag" value="{{ old('asset_tags.1', \App\Models\Asset::autoincrement_asset()) }}" required>
+              {!! $errors->first('asset_tags', '<span class="alert-msg"><i class="fas fa-times"></i>  Наименование тега должно быть уникальным.</span>') !!}
+              {!! $errors->first('asset_tag', '<span class="alert-msg"><i class="fas fa-times"></i> Наименование тега должно быть уникальным.</span>') !!}
+          </div>
+        <!--  <div class="col-md-2 col-sm-12">
+              <button class="add_field_button btn btn-default btn-sm">
+                  <x-icon type="plus" />
+              </button>-->
+          </div>
+      @endif
+  </div>
     <div class="form-group">
     <label class="col-md-3 control-label"></label>
 
@@ -33,45 +60,18 @@
         
         <div id="main_details" class="col-md-12" style="display:none">
         <br>
-  <!-- Asset Tag -->
-  <div class="form-group {{ $errors->has('asset_tag') ? ' has-error' : '' }}">
-    <label for="asset_tag" class="col-md-3 control-label">{{ trans('admin/hardware/form.tag') }}</label>
-
-
-
-      @if  ($item->id)
-          <!-- we are editing an existing asset,  there will be only one asset tag -->
-          <div class="col-md-7 col-sm-12">
-
-          <input class="form-control" type="text" name="asset_tags[1]" id="asset_tag" value="{{ old('asset_tag', $item->asset_tag) }}" >
-              {!! $errors->first('asset_tags', '<span class="alert-msg"><i class="fas fa-times"></i> Наименование тега должно быть уникальным.</span>') !!}
-              {!! $errors->first('asset_tag', '<span class="alert-msg"><i class="fas fa-times"></i>  Наименование тега должно быть уникальным.</span>') !!}
-          </div>
-      @else
-          <!-- we are creating a new asset - let people use more than one asset tag -->
-          <div class="col-md-7 col-sm-12">
-              <input class="form-control" type="text" name="asset_tags[1]" id="asset_tag" value="{{ old('asset_tags.1', \App\Models\Asset::autoincrement_asset()) }}" >
-              {!! $errors->first('asset_tags', '<span class="alert-msg"><i class="fas fa-times"></i>  Наименование тега должно быть уникальным.</span>') !!}
-              {!! $errors->first('asset_tag', '<span class="alert-msg"><i class="fas fa-times"></i> Наименование тега должно быть уникальным.</span>') !!}
-          </div>
-          <div class="col-md-2 col-sm-12">
-              <button class="add_field_button btn btn-default btn-sm">
-                  <x-icon type="plus" />
-              </button>
-          </div>
-      @endif
-  </div>
+        @include ('partials.forms.edit.company-select', ['translated_name' => trans('general.company'), 'fieldname' => 'company_id'])
   <script src="{{ url(asset('js/jquery.js')) }}" nonce="{{ csrf_token() }}"></script>
   <script>
  
- $(document).ready(function () {
+ /*$(document).ready(function () {
     $('#company_select').on('change', function () {
         
         const selectedCompanyName = $(this).find('option:selected').text(); // Получаем текст выбранной опции
         console.log(selectedCompanyName);
         $('#asset_tag').val(selectedCompanyName); // Устанавливаем значение в input
     });
-});
+});*/
 
 </script>
     @include ('partials.forms.edit.serial', ['fieldname'=> 'serials[1]', 'old_val_name' => 'serials.1', 'translated_serial' => trans('admin/hardware/form.serial')])
@@ -82,7 +82,7 @@
     @include ('partials.forms.edit.model-select', ['translated_name' => trans('admin/hardware/form.model'), 'fieldname' => 'model_id'])
 
 
-    @include ('partials.forms.edit.status', [ 'required' => 'false'])
+    @include ('partials.forms.edit.status', [ 'required' => 'true'])
     @if (!$item->id)
         @include ('partials.forms.checkout-selector', ['user_select' => 'true','asset_select' => 'true', 'location_select' => 'true', 'style' => 'display:none;'])
         @include ('partials.forms.edit.user-select', ['translated_name' => trans('admin/hardware/form.checkout_to'), 'fieldname' => 'assigned_user', 'style' => 'display:none;', 'required' => 'false'])
