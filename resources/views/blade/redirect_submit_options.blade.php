@@ -86,19 +86,15 @@
 <body>
     <div class="container">
         <div class="item">
-            <span class="label">Партийный номер:</span><br>
             <span class="value" id="part-number">${$('#partnum').val() || 'N/A'}</span>
         </div>
         <div class="item">
-            <span class="label">Имя:</span><br>
             <span class="value" id="name">${$('#name').val() || 'N/A'}</span>
         </div>
         <div class="item">
-            <span class="label">Поставка:</span><br>
             <span class="value" id="delivery-date">${$('#purchase_date').val() || 'N/A'}</span>
         </div>
         <div class="item">
-            <span class="label">Всего:</span><br>
             <span class="value" id="total">${$('#qty').val() || 'N/A'}</span>
             <span>шт.</span>
         </div>
