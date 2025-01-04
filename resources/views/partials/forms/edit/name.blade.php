@@ -37,7 +37,6 @@
                     return {
                         label: item.name,
                         value: item.name,
-                        category_id: item.category_id,
                         partnum: item.partnum // Сохраняем номер как часть объекта
                     };
                 }));
@@ -48,7 +47,6 @@
     select: function (event, ui) {
         // При выборе элемента из списка, установить значение в скрытое поле
         $('#partnum').val(ui.item.partnum); // Здесь используется переменная $fieldname
-    $('#category_select_id').val(ui.item.category_id).trigger('change');
     }
 });
     });

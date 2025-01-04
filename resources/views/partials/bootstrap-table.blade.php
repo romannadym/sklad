@@ -216,6 +216,8 @@
         };
     }
 
+    
+
     // Use this when we're introspecting into a column object and need to link
     function genericColumnObjLinkFormatter(destination) {
         return function (value,row) {
@@ -429,7 +431,7 @@
 
     // We need a special formatter for license seats, since they don't work exactly the same
     // Checkouts need the license ID, checkins need the specific seat ID
-
+    
     function licenseSeatInOutFormatter(value, row) {
         // The user is allowed to check the license seat out and it's available
         if ((row.available_actions.checkout === true) && (row.user_can_checkout === true) && ((!row.asset_id) && (!row.assigned_to))) {
@@ -494,6 +496,7 @@
         'accessories',
         'consumables',
         'components',
+        'componentbooks',
         'locations',
         'users',
         'manufacturers',

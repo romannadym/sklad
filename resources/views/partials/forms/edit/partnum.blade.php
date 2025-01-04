@@ -22,7 +22,6 @@
                             label: item.partnum, // Партномер
                             value: item.partnum, // Партномер
                             name: item.name, // Нвие компонента
-                            category_id: item.category_id // ID категории
                         };
                     }));
                 }, 
@@ -33,7 +32,6 @@
             // При выборе элемента из списка установить значения
             $('#name').val(ui.item.name); // Установить наименование компонента
             $('#{{ $fieldname }}').val(ui.item.value); // Установить наименование компонента
-            $('#category_select_id').val(ui.item.category_id).trigger('change'); // Установить ID категории
         }
     });
 });

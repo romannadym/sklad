@@ -674,6 +674,14 @@ dir="{{ Helper::determineLanguageDirection() }}">
                                             </a>
                                         </li>
                                     @endcan
+                                    
+                                    @can('view', \App\Models\ComponentBook::class)
+                                        <li>
+                                            <a href="{{ route('componentbooks.index') }}" {{ (Request::is('/componentbooks') ? ' class="active"' : '') }}>
+                                                Справочник комопнентов
+                                            </a>
+                                        </li>
+                                        @endcan
 
                                     @can('view', \App\Models\Category::class)
                                         <li>

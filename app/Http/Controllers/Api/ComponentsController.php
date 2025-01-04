@@ -6,6 +6,7 @@ use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Transformers\ComponentsTransformer;
 use App\Models\Component;
+use App\Models\ComponentBook;
 use Illuminate\Http\Request;
 use App\Http\Requests\ImageUploadRequest;
 use App\Events\CheckoutableCheckedIn;
@@ -360,28 +361,28 @@ class ComponentsController extends Controller
     }
     public function search(Request $request)
     {
-        $this->authorize('view', Component::class);
+        $this->authorize('view', ComponentBook::class);
         $query = $request->input('query'); // Получение параметра запроса
         $filter = $request->input('filter'); // Получение параметра фильтрации
         $components = [];
         if($filter == 'all')
         {
-            $components = Component::withTrashed()->where('name', 'LIKE', "%{$query}%")
+            $components = ComponentBook::where('name', 'LIKE', "%{$query}%")
             ->orWhere('partnum', 'LIKE', "%{$query}%")
            // ->limit(10)
-            ->get(['id', 'name','category_id','partnum']); // Поиск по имени
+            ->get(['id', 'name','partnum']); // Поиск по имени
         }
         if($filter == 'name')
         {
-            $components = Component::withTrashed()->where('name', 'LIKE', "%{$query}%")
+            $components = ComponentBook::where('name', 'LIKE', "%{$query}%")
            // ->limit(10)
-           ->groupBy('name')->get(['id', 'name','category_id','partnum']); // Поиск по имени
+           ->get(['id', 'name','partnum']); // Поиск по имени
         }
         if($filter == 'partnum')
         {
-            $components = Component::withTrashed()->where('partnum', 'LIKE', "%{$query}%")
+            $components = ComponentBook::where('partnum', 'LIKE', "%{$query}%")
            // ->limit(10)
-           ->groupBy('name')->get(['id', 'name','category_id','partnum']); // Поиск по имени
+           ->get(['id', 'name','partnum']); // Поиск по имени
         }
         
 

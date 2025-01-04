@@ -265,7 +265,23 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'throttle:api']], functi
         ]
     ); // end components API routes
 
+     /**
+      * ComponentBooks API routes
+      */
 
+      Route::resource('componentbooks', 
+        Api\ComponentBooksController::class,
+        ['names' => [
+                'index' => 'api.componentbooks.index',
+                'show' => 'api.componentbooks.show',
+                'update' => 'api.componentbooks.update',
+                'store' => 'api.componentbooks.store',
+                'destroy' => 'api.componentbooks.destroy',
+            ],
+        'except' => ['create', 'edit'],
+        'parameters' => ['componentbook' => 'componentbook_id'],
+        ]
+    ); // end ComponentBooks API routes
       /**
       * Consumables API routes
       */
@@ -838,6 +854,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'throttle:api']], functi
         ]
         ); // end asset models API routes
 
+      
 
 
         /**

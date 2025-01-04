@@ -46,3 +46,8 @@ Route::resource('components', Components\ComponentsController::class, [
     'middleware' => ['auth'],
     'parameters' => ['component' => 'component_id'],
 ]);
+
+Route::resource('componentbooks', Components\ComponentBooksController::class, [
+    'middleware' => ['auth'],
+    'parameters' => ['componentbook' => 'componentbook_id'],
+]);
