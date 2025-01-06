@@ -1296,7 +1296,7 @@ class Helper
      * @return string[]
      */
     public static function SettingUrls(){
-        $settings=['#','fields.index', 'statuslabels.index', 'models.index', 'categories.index', 'manufacturers.index', 'suppliers.index', 'departments.index', 'locations.index', 'companies.index', 'depreciations.index'];
+        $settings=['#','fields.index', 'componentbooks.index','checkout.index', 'statuslabels.index', 'models.index', 'categories.index', 'manufacturers.index', 'suppliers.index', 'departments.index', 'locations.index', 'companies.index', 'depreciations.index'];
 
         return $settings;
         }

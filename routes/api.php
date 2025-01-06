@@ -1280,6 +1280,14 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'throttle:api']], functi
                 'index'
             ]
             )->name('api.activity.index');
+
+            Route::get('checkout',
+            [
+                Api\ReportsCheckoutController::class, 
+                'index'
+            ]
+            )->name('api.checkout.index');
+
         }); // end reports api routes
 
         /**

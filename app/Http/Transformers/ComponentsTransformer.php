@@ -81,7 +81,7 @@ class ComponentsTransformer
         $array = [];
         foreach ($components_assets as $asset) {
            $user = User::find($asset->pivot->assigned_to_user_id);
-
+           $component  = Component::find($asset->pivot->component_id);
             $array[] = [
                 'assigned_pivot_id' => $asset->pivot->id,
                 'id' => (int) $asset->id,
@@ -90,9 +90,12 @@ class ComponentsTransformer
                 'note' => $asset->pivot->note,
                 'ticketnum' => $asset->pivot->ticketnum,
                 'assigned_to_username' => "<a href='/users/{$user->id}'>". e($user->last_name.' '.e($user->first_name))."</a>" , // Получаем имя пользователя,
+                'assigned_to_username2' => e($user->last_name).' '.e($user->first_name), // Получаем имя пользователя,
                 'type' => 'asset',
                 'created_at' => Helper::getFormattedDateObject($asset->pivot->created_at, 'datetime'),
                 'available_actions' => ['checkin' => true],
+                'component_name' => "<a href='/components/{$component->id}'>". e($component->name)."</a>",
+                'component_name2' => e($component->name),
             ];
         }
 

@@ -384,8 +384,15 @@ Route::group(['middleware' => ['auth']], function () {
         'reports/activity',
         [ReportsController::class, 'getActivityReport']
     )->name('reports.activity');
+    
+    Route::get(
+        'reports/checkout',
+        [ReportsController::class, 'getCheckoutReport']
+    )->name('reports.checkout');
 
     Route::post('reports/activity', [ReportsController::class, 'postActivityReport']);
+
+    Route::post('reports/checkout', [ReportsController::class, 'postCheckoutReport']);
 
     Route::get(
         'reports/unaccepted_assets/{deleted?}',

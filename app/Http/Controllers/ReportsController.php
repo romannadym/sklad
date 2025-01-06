@@ -26,6 +26,8 @@ use League\Csv\EscapeFormula;
 use App\Http\Requests\CustomAssetReportRequest;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\RedirectResponse;
+use App\Models\Component;
+use App\Http\Transformers\ComponentsTransformer;
 
 /**
  * This controller handles all actions related to Reports for
@@ -55,7 +57,7 @@ class ReportsController extends Controller
         $this->authorize('reports.view');
 
         return view('reports/accessories');
-    }
+    } 
 
     /**
     * Exports the accessories to CSV
@@ -203,6 +205,92 @@ class ReportsController extends Controller
         return view('reports/audit');
     }
 
+    /**
+    * Displays checkout report.
+    *
+    * @author [A. Gianotto] [<snipe@snipe.net>]
+    * @since [v1.0]
+    */
+    public function getCheckoutReport() : View
+    {
+        $this->authorize('reports.view');
+
+        return view('reports/checkout');
+    }
+
+     /**
+     * Exports the checkout report to CSV
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v5.0.7]
+     */
+    
+    public function postCheckoutReport(Request $request) : StreamedResponse
+    {
+        ini_set('max_execution_time', 12000);
+        $this->authorize('reports.view');
+
+       
+        \Debugbar::disable();
+        $response = new StreamedResponse(function () {
+
+            $component = Component::all();
+            // Open output stream
+            $handle = fopen('php://output', 'w');
+            stream_set_timeout($handle, 2000);
+              // Add UTF-8 BOM
+                fwrite($handle, "\xEF\xBB\xBF");
+            $header = [
+                'Заказчик',
+                'Компонент',
+                'Количество',
+                'Примечания',
+                'Номер заявки',
+                'Инженер',
+                'Дата',
+            ];
+            fputcsv($handle, $header);
+            foreach ($component as $item) {
+                $assets = $item->assets();
+                $total = $assets->count();
+                $assets = $assets->skip(0)->take(10000000)->get();
+                if($total > 0) {
+                    $ass[] = (new ComponentsTransformer)->transformCheckedoutComponents($assets, $total);
+                }
+                
+            }
+            if(isset($ass))
+            {
+                foreach($ass as $key => $asset)
+                {
+                    foreach($asset['rows'] as $key => $row)
+                    {
+                        $row = [
+                            $row['name'],
+                            $row['component_name2'],
+                            $row['qty'],
+                            $row['note'],
+                            $row['ticketnum'],
+                            $row['assigned_to_username2'],
+                            $row['created_at']['datetime'],
+                            
+                        ];
+                        fputcsv($handle, $row);
+                    }
+                }
+            }
+
+            // Close the output stream
+            fclose($handle);
+        }, 200, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="checkout-report-'.date('Y-m-d-his').'.csv"',
+        ]);
+
+
+        return $response;
+
+    }
 
     /**
     * Displays activity report.

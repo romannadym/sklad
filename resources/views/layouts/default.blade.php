@@ -676,7 +676,7 @@ dir="{{ Helper::determineLanguageDirection() }}">
                                     @endcan
                                     
                                     @can('view', \App\Models\ComponentBook::class)
-                                        <li>
+                                        <li {!! (Request::is('componentbooks*') ? ' class="active"' : '') !!}>
                                             <a href="{{ route('componentbooks.index') }}" {{ (Request::is('/componentbooks') ? ' class="active"' : '') }}>
                                                 Справочник комопнентов
                                             </a>
@@ -751,12 +751,17 @@ dir="{{ Helper::determineLanguageDirection() }}">
                                 </a>
 
                                 <ul class="treeview-menu">
-                                    <li>
+                                    <li >
                                         <a href="{{ route('reports.activity') }}" {{ (Request::is('reports/activity') ? ' class="active"' : '') }}>
                                             {{ trans('general.activity_report') }}
                                         </a>
                                     </li>
                                     <li>
+                                        <a href="{{ url('reports/checkout') }}" {{ (Request::is('reports/checkout') ? ' class="active"' : '') }}>
+                                           Отчет об отправленных запчастях
+                                        </a>
+                                    </li>
+                                 <!--   <li>
                                         <a href="{{ url('reports/custom') }}" {{ (Request::is('reports/custom') ? ' class="active"' : '') }}>
                                             {{ trans('general.custom_report') }}
                                         </a>
@@ -789,7 +794,7 @@ dir="{{ Helper::determineLanguageDirection() }}">
                                         <a href="{{ url('reports/accessories') }}" {{ (Request::is('reports/accessories') ? ' class="active"' : '') }}>
                                             {{ trans('general.accessory_report') }}
                                         </a>
-                                    </li>
+                                    </li>-->
                                 </ul>
                             </li>
                         @endcan
