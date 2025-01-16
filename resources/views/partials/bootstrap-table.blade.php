@@ -6,15 +6,14 @@
 
 <script src="{{ url(mix('js/dist/bootstrap-table.js')) }}"></script>
 <script src="{{ url(mix('js/dist/bootstrap-table-locale-all.min.js')) }}"></script>
-
 <!-- load english again here, even though it's in the all.js file, because if BS table doesn't have the translation, it otherwise defaults to chinese. See https://bootstrap-table.com/docs/api/table-options/#locale -->
 <script src="{{ url(mix('js/dist/bootstrap-table-en-US.min.js')) }}"></script>
-
 <script nonce="{{ csrf_token() }}">
+     
     $(function () {
-
+       
         var blockedFields = "searchable,sortable,switchable,title,visible,formatter,class".split(",");
-
+        
         var keyBlocked = function(key) {
             for(var j in blockedFields) {
                 if (key === blockedFields[j]) {
@@ -24,8 +23,36 @@
             return false;
         }
 
-        $('.snipe-table').bootstrapTable('destroy').each(function () {
+        let timeout; // Объявляем переменную timeout вне обработчика событий
 
+        var filters = {};
+        $('.snipe-table').bootstrapTable('destroy').each(function () {
+            table = $(this);
+             
+            $(document).ready(function() {
+                       // Получаем сохранённые фильтры из cookies
+            savedFilters = table.bootstrapTable('getCookies').filterBy || {};
+            if(typeof savedFilters === 'string') {
+                savedFilters = JSON.parse(savedFilters);
+            }
+            // Устанавливаем значения в селекты
+                $('select[data-filter]').each(function () {
+                    var filterName = $(this).data('filter');
+                    
+                    if (savedFilters[filterName]) {
+                        $(this).val(savedFilters[filterName]).change(); // Устанавливаем значение
+                    }
+                });
+
+                $('input[data-filter]').each(function () {
+                    var filterName = $(this).data('filter');
+                    
+                    if (savedFilters[filterName]) {
+                        $(this).val(savedFilters[filterName]).change(); // Устанавливаем значение
+                    }
+                });
+            });
+            
             data_export_options = $(this).attr('data-export-options');
             export_options = data_export_options ? JSON.parse(data_export_options) : {};
             export_options['htmlContent'] = false; // this is already the default; but let's be explicit about it
@@ -75,6 +102,9 @@
                         newParams[i] = params[i];
                     }
                 }
+                newParams['filter'] = JSON.parse(table.bootstrapTable('getCookies').filterBy);
+                console.log(newParams);
+                
                 return newParams;
             },
             formatLoadingMessage: function () {
@@ -94,6 +124,39 @@
             exportOptions: export_options,
             exportTypes: ['xlsx', 'excel', 'csv', 'pdf','json', 'xml', 'txt', 'sql', 'doc' ],
             onLoadSuccess: function () {
+                $('select[data-filter]').on('change', function () {
+                    var filterName = $(this).data('filter'); // Имя фильтра
+                    var selectedValue = $(this).val(); // Выбранное значение
+
+                    // Получаем текущие фильтры из таблицы
+                    var currentFilters = JSON.parse(table.bootstrapTable('getCookies').filterBy) || {};
+                    
+                    // Обновляем или добавляем новый фильтр
+                    currentFilters[filterName] = selectedValue;
+                    console.log(currentFilters);
+                    // Применяем обновлённый набор фильтров
+                    table.bootstrapTable('filterBy', currentFilters);
+                    table.bootstrapTable('refresh', {});
+                });
+
+                $('input[data-filter]').on('input', function() {
+                    var filterName = $(this).data('filter'); // Получаем имя поля
+                    var value = $(this).val();
+                    clearTimeout(timeout); // Сбрасываем предыдущий таймер
+
+                    timeout = setTimeout(function() {
+                        
+                        // Получаем текущие фильтры из таблицы
+                        var currentFilters = JSON.parse(table.bootstrapTable('getCookies').filterBy) || {};
+                        
+                        // Обновляем или добавляем новый фильтр
+                        currentFilters[filterName] = value;
+                        // Применяем обновлённый набор фильтров
+                        table.bootstrapTable('filterBy', currentFilters);
+                        table.bootstrapTable('refresh', {});
+                    }, 300); // Задержка в 300 миллисекунд
+                });
+
                 $('[data-tooltip="true"]').tooltip(); // Needed to attach tooltips after ajax call
             },
             formatNoMatches: function () {
@@ -976,5 +1039,4 @@
     });
 
 </script>
-    
 @endpush

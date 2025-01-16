@@ -214,8 +214,42 @@ class ReportsController extends Controller
     public function getCheckoutReport() : View
     {
         $this->authorize('reports.view');
-
-        return view('reports/checkout');
+        $component = Component::all();
+        foreach ($component as $item) {
+            $assets = $item->assets();
+            $total = $assets->count();
+            $assets = $assets->skip(0)->take(1000000000000)->get();
+            if($total > 0) {
+                $ass[] = (new ComponentsTransformer)->transformCheckedoutComponents($assets, $total);
+            }
+            
+        }
+        $assetName = [];
+        $componentName = [];
+        if(isset($ass))
+            {
+                foreach($ass as $key => $asset)
+                {
+                    foreach($asset['rows'] as $key => $row)
+                    {
+                        $rows[] = [
+                            'name' => $row['name'],
+                            'component_name' => $row['component_name2'],
+                            'qty' => $row['qty'],
+                            'note' => $row['note'],
+                            'ticketnum' => $row['ticketnum'],
+                            'assigned_to_username' => $row['assigned_to_username2'],
+                            'created_at' => $row['created_at']['datetime'],
+                            
+                        ];
+                        $assetName[] = $row['name'];
+                        $componentName[] = $row['component_name2'];
+                    }
+                }
+            }
+            $assetName = array_values(array_unique($assetName));
+            $componentName = array_values(array_unique($componentName));
+        return view('reports/checkout',['items'=>$rows, 'assetName' => $assetName, 'componentName' => $componentName]);
     }
 
      /**

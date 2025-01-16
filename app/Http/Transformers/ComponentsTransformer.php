@@ -85,7 +85,7 @@ class ComponentsTransformer
             $array[] = [
                 'assigned_pivot_id' => $asset->pivot->id,
                 'id' => (int) $asset->id,
-                'name' =>  e($asset->model->present()->name).' '.e($asset->present()->name),
+                'name' => /* e($asset->model->present()->name).' '.*/ e($asset->present()->name),
                 'qty' => $asset->pivot->assigned_qty,
                 'note' => $asset->pivot->note,
                 'ticketnum' => $asset->pivot->ticketnum,

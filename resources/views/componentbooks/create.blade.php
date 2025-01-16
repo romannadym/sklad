@@ -63,10 +63,14 @@
             <div class="form-group">
                 <label for="name" class="col-md-3 control-label"> Партийный номер</label>
                 <div class="col-md-8 col-sm-12">
-                    <input class="form-control" style="width:100%;" type="text" name="partnum" aria-label="partnum" id="partnum" value="" required/>
+                    <input class="form-control" style="width:100%;" type="text" name="partnum" aria-label="partnum" id="partnum" value="{{ old('partnum.1', $item->partnum) }}" required/>
                     {!! $errors->first('partnum', '<span class="alert-msg" aria-hidden="true"><i class="fas fa-times" aria-hidden="true"></i>Это поле не может быть пустым </span>') !!}
-                </div>
+                    {!! $errors->first('partnums', '<span class="alert-msg"><i class="fas fa-times"></i>  Партийный номер должен быть уникальным.</span>') !!}
+                    @if($errors->has('duplicate'))
+                     <span class="alert-msg"><i class="fas fa-times"></i>  Партийный номер должен быть уникальным.</span>
+                     @endif
             </div>
+            
 <div style="padding-top: 30px;">
     @if ($item->id)
     {{ method_field('PUT') }}

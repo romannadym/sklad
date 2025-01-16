@@ -33,7 +33,7 @@
                 @if(isset($options['print']) && $options['print'] == true)
                 <a href="#" class="btn btn-primary pull-right" id="print" style="margin-left:5px; border-radius: 3px;" >
                     <x-icon type="print" />
-                </a>   
+                </a>
                 <script>
                     $(document).ready(function(){
                         $('#print').click(function(event){
@@ -57,12 +57,11 @@
             align-items: center;
             height: 100vh;
             background-color: #f9f9f9;
-            font-size: 48px;
+
         }
         .container {
-            border: 1px solid #ccc;
-            width: 70%;
-            height: 70%;
+            width: 100%;
+            height: 100%;
             background-color: #ffffff;
             border-radius: 5px;
             text-align: center;
@@ -71,7 +70,19 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            font-size: 7vw;
         }
+        @page {
+  size: landscape; /* Определяем размер страницы */
+  margin: 0; /* Устанавливаем нулевые поля */
+}
+
+@media print {
+  body {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+  }
+}
         .item {
             margin-bottom: 20px;
         }
@@ -80,19 +91,19 @@
             font-size: 1.2em;
             margin-bottom: 5px;
         }
-       
+
     </style>
 </head>
 <body>
     <div class="container">
         <div class="item">
-            <span class="value" id="part-number">${$('#partnum').val() || 'N/A'}</span>
-        </div>
+            <span class="value" id="part-number"><b>${$('#partnum').val() || 'N/A'}</b></span>
+        </div><br>
         <div class="item">
             <span class="value" id="name">${$('#name').val() || 'N/A'}</span>
         </div>
         <div class="item">
-            <span class="value" id="delivery-date">${$('#purchase_date').val() || 'N/A'}</span>
+            <span class="value" id="delivery-date">Поставка: ${$('#purchase_date').val() || 'N/A'}</span>
         </div>
         <div class="item">
             <span class="value" id="total">${$('#qty').val() || 'N/A'}</span>
@@ -105,14 +116,14 @@
 
                             // Открытие нового окна
                             const printWindow = window.open();
-                           
+
                                 printWindow.document.open();
                                 printWindow.document.write(printContent);
                                 printWindow.document.close();
                                 printWindow.print();
                         }
 
-                    }); 
+                    });
                 </script>
                 @endif
             </div><!-- /.btn-group -->

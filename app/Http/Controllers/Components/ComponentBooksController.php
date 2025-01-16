@@ -58,7 +58,14 @@ class ComponentBooksController extends Controller
         $component->name                   = $request->get('name');  
         $component->partnum                  = $request->get('partnum');
       //  session()->put(['redirect_option' => $request->get('redirect_option')]);
-
+        $duplicate = ComponentBook::where(['partnum' => $request->get('partnum')])->first();
+        if(isset($duplicate->partnum))
+        {
+            $duplicate = new \stdClass();
+            $duplicate->duplicate = 1;  
+            return redirect()->back()->withInput()->withErrors($duplicate);
+        }
+        
         if ($component->save()) {
            // return redirect()->to(Helper::getRedirectOption($request, $component->id, 'Components'))->with('success', trans('admin/components/message.create.success'));
             return redirect()->route('componentbooks.index')->with('success', 'Component '.$component->id.' Book created successfully!');
@@ -106,7 +113,13 @@ class ComponentBooksController extends Controller
         }
 
         $this->authorize('update', $component);
-
+        $duplicate = ComponentBook::where(['partnum' => $request->input('partnum')])->where('id','!=',$componentId)->first();
+        if(isset($duplicate->partnum))
+        {
+            $duplicate = new \stdClass();
+            $duplicate->duplicate = 1;
+            return redirect()->back()->withInput()->withErrors($duplicate);
+        }
         // Update the component data
         $component->name                   = $request->input('name');
         $component->partnum                  = $request->input('partnum');

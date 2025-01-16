@@ -65,6 +65,9 @@
                 <div class="col-md-8 col-sm-12">
                     <input class="form-control" style="width:100%;" type="text" name="partnum" aria-label="partnum" id="partnum" value="{{ $item->partnum }}" required/>
                     {!! $errors->first('partnum', '<span class="alert-msg" aria-hidden="true"><i class="fas fa-times" aria-hidden="true"></i>Это поле не может быть пустым </span>') !!}
+                    @if($errors->has('duplicate'))
+                     <span class="alert-msg"><i class="fas fa-times"></i>  Партийный номер должен быть уникальным.</span>
+                     @endif
                 </div>
             </div>
 <div style="padding-top: 30px;">

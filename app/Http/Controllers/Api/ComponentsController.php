@@ -361,7 +361,7 @@ class ComponentsController extends Controller
     }
     public function search(Request $request)
     {
-        $this->authorize('view', ComponentBook::class);
+       // $this->authorize('view', ComponentBook::class);
         $query = $request->input('query'); // Получение параметра запроса
         $filter = $request->input('filter'); // Получение параметра фильтрации
         $components = [];
