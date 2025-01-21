@@ -388,5 +388,51 @@ class ComponentsController extends Controller
 
         return response()->json($components); // Возврат данных в формате JSON
     }
+    public function getComponentsReport(Request $request)
+    {
+        $this->authorize('view', \App\Models\Asset::class);
+        
+        $offset = request('offset', 0);
+        $limit = $request->input('limit', 50);
+                    // Базовый запрос
+                $query = Component::select('partnum')
+                ->selectRaw('SUM(qty) as qty')
+                ->selectRaw('MAX(name) as name')
+                ->groupBy('partnum');
 
+            // Добавление условия поиска
+            if ($request->filled('search') || $request->filled('filter')) {
+                $query->where(function ($q) use ($request) {
+                    $search = '%'.$request->input('search').'%';
+                    $q->where('partnum', 'LIKE', '%' . $search . '%')
+                      ->orWhere('name', 'LIKE', '%' . $search . '%');
+                })->where(function($q) use ($request){
+                    if ($request->filled('filter')) {
+                        if(!empty($request->input('filter')['name'])){
+                            $q->where('name', $request->input('filter')['name']);
+                        }
+                        if(!empty($request->input('filter')['partnum'])){
+                            $q->where('partnum', $request->input('filter')['partnum']);
+                        }
+                      }
+                });
+            }
+
+            // Подсчёт общего количества записей
+            $total = $query->get()->count();
+
+            // Получение данных с учётом пагинации
+            $components = $query
+                ->skip($offset)
+                ->take($limit)
+                ->get();
+
+            // Формирование результата
+            $result = [
+                'rows' => $components,
+                'total' => $total,
+            ];
+ 
+        return response()->json($result, 200, [], JSON_NUMERIC_CHECK);
+    }
 }

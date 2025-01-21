@@ -761,6 +761,11 @@ dir="{{ Helper::determineLanguageDirection() }}">
                                            Отчет об отправленных запчастях
                                         </a>
                                     </li>
+                                    <li>
+                                        <a href="{{ url('reports/components') }}" {{ (Request::is('reports/components') ? ' class="active"' : '') }}>
+                                           Отчет об остатках
+                                        </a>
+                                    </li>
                                  <!--   <li>
                                         <a href="{{ url('reports/custom') }}" {{ (Request::is('reports/custom') ? ' class="active"' : '') }}>
                                             {{ trans('general.custom_report') }}

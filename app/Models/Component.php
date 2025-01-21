@@ -81,7 +81,7 @@ class Component extends SnipeModel
      *
      * @var array
      */
-    protected $searchableAttributes = ['name', 'order_number', 'serial', 'partnum', 'status', 'customer', 'purchase_cost', 'purchase_date', 'notes','assigned_to_user_id'];
+    protected $searchableAttributes = ['name', 'order_number', 'serial', 'partnum', 'status', 'customer', 'purchase_cost', 'purchase_date', 'notes'];
 
     /**
      * The relations and their attributes that should be included when searching the model.

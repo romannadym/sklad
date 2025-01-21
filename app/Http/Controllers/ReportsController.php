@@ -326,6 +326,46 @@ class ReportsController extends Controller
 
     }
 
+      /**
+    * Displays checkout report.
+    *
+    * @author [A. Gianotto] [<snipe@snipe.net>]
+    * @since [v1.0]
+    */
+    public function getComponentsReport() : View
+    {
+        $this->authorize('reports.view');
+            // Подсчёт общего количества записей
+            $total = Component::select('partnum')
+            ->groupBy('partnum')
+            ->get()
+            ->count();
+
+        // Получение данных с учётом пагинации
+        $components = Component::select('partnum')
+            ->selectRaw('SUM(qty) as qty')
+            ->selectRaw('MAX(name) as name')
+            ->groupBy('partnum')
+            ->skip(0)
+            ->take(1000000000)
+            ->get();
+
+        // Формирование результата
+        $result = [
+            'rows' => $components,
+            'total' => $total, // Здесь общее количество всех записей
+        ];
+        foreach($result['rows'] as $key => $row){
+            $name[] = $row->name;
+            $partnum[] = $row->partnum;
+            
+        }
+        $name = array_values(array_unique($name));
+        $partnum = array_values(array_unique($partnum));
+      
+        return view('reports/components',['items'=>$result, 'name'=>$name, 'partnum'=>$partnum]);
+    }
+
     /**
     * Displays activity report.
     *
@@ -446,6 +486,7 @@ class ReportsController extends Controller
      * @author [A. Gianotto] [<snipe@snipe.net>]
      * @since [v1.0]
      */
+    
     public function getLicenseReport() : View
     {
         $this->authorize('reports.view');

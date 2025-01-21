@@ -232,7 +232,12 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'throttle:api']], functi
         )->name('api.components.assets');
         Route::get('search', [Api\ComponentsController::class, 'search'])->name('api.components.search');
        
-        
+        Route::get('reports',
+        [
+            Api\ComponentsController::class, 
+            'getComponentsReport'
+        ]
+        )->name('api.components.report');
 
       });
       
@@ -1285,9 +1290,9 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'throttle:api']], functi
             [
                 Api\ReportsCheckoutController::class, 
                 'index'
-            ]
+            ] 
             )->name('api.checkout.index');
-
+           
         }); // end reports api routes
 
         /**

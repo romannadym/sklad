@@ -389,7 +389,10 @@ Route::group(['middleware' => ['auth']], function () {
         'reports/checkout',
         [ReportsController::class, 'getCheckoutReport']
     )->name('reports.checkout');
-
+    Route::get(
+        'reports/components',
+        [ReportsController::class, 'getComponentsReport']
+    )->name('reports.components');
     Route::post('reports/activity', [ReportsController::class, 'postActivityReport']);
 
     Route::post('reports/checkout', [ReportsController::class, 'postCheckoutReport']);

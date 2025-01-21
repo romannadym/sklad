@@ -92,8 +92,8 @@
                 <th data-searchable="false" data-sortable="false" data-field="created_at" data-formatter="dateDisplayFormatter">
                   <div class="columns" style="display: flex; gap: 5px; align-items: center;">
                   {{ trans('general.date') }}
-                      <input name="dateStart" type="datetime-local" class="form-control" data-filter="dateStart"/>
-                      <input name="dateEnd" type="datetime-local" class="form-control" data-filter="dateEnd"/>
+                      <input name="dateStart" type="date" class="form-control" data-filter="dateStart"/>
+                      <input name="dateEnd" type="date" class="form-control" data-filter="dateEnd"/>
                      
                   </div>
                  
