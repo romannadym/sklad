@@ -8,6 +8,7 @@ use App\Models\AssetModel;
 use App\Models\Category;
 use App\Models\Company;
 use App\Models\Component;
+use App\Models\ComponentBook;
 use App\Models\Consumable;
 use App\Models\CustomField;
 use App\Models\CustomFieldset;
@@ -26,6 +27,7 @@ use App\Policies\AssetPolicy;
 use App\Policies\CategoryPolicy;
 use App\Policies\CompanyPolicy;
 use App\Policies\ComponentPolicy;
+use App\Policies\ComponentBooksPolicy;
 use App\Policies\ConsumablePolicy;
 use App\Policies\CustomFieldPolicy;
 use App\Policies\CustomFieldsetPolicy;
@@ -58,6 +60,7 @@ class AuthServiceProvider extends ServiceProvider
         AssetModel::class => AssetModelPolicy::class,
         Category::class => CategoryPolicy::class,
         Component::class => ComponentPolicy::class,
+        ComponentBook::class => ComponentBooksPolicy::class,
         Consumable::class => ConsumablePolicy::class,
         CustomField::class => CustomFieldPolicy::class,
         CustomFieldset::class => CustomFieldsetPolicy::class,
@@ -202,6 +205,7 @@ class AuthServiceProvider extends ServiceProvider
                 || $user->can('view', Manufacturer::class)
                 || $user->can('view', Supplier::class)
                 || $user->can('view', Department::class)
+                || $user->can('view', ComponentBook::class)
                 || $user->can('view', Location::class)
                 || $user->can('view', Company::class)
                 || $user->can('view', Manufacturer::class)
@@ -225,6 +229,8 @@ class AuthServiceProvider extends ServiceProvider
                 || $user->can('create', License::class)   
                 || $user->can('update', Component::class)
                 || $user->can('create', Component::class)   
+                || $user->can('update', ComponentBook::class)
+                || $user->can('create', ComponentBook::class)   
                 || $user->can('update', Consumable::class)   
                 || $user->can('create', Consumable::class)   
                 || $user->can('update', Accessory::class)

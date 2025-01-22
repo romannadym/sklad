@@ -293,6 +293,34 @@ return [
 
     ],
 
+    'ComponentBooks' => [
+        [
+            'permission' => 'componentbooks.view',
+            'label'      => 'View',
+            'note'       => '',
+            'display'    => true,
+        ],
+        [
+            'permission' => 'componentbooks.create',
+            'label'      => 'Create ',
+            'note'       => '',
+            'display'    => true,
+        ],
+        [
+            'permission' => 'componentbooks.edit',
+            'label'      => 'Edit ',
+            'note'       => '',
+            'display'    => true,
+        ],
+        [
+            'permission' => 'componentbooks.delete',
+            'label'      => 'Delete ',
+            'note'       => '',
+            'display'    => true,
+        ],
+
+    ],
+
     'Kits' => [
         [
             'permission' => 'kits.view',
