@@ -5,6 +5,7 @@ namespace App\Http\Transformers;
 use App\Helpers\Helper;
 use App\Models\Component;
 use App\Models\User;
+use App\Models\Asset;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Storage;
@@ -93,6 +94,31 @@ class ComponentsTransformer
                 'assigned_to_username2' => e($user->last_name).' '.e($user->first_name), // Получаем имя пользователя,
                 'type' => 'asset',
                 'created_at' => Helper::getFormattedDateObject($asset->pivot->created_at, 'datetime'),
+                'available_actions' => ['checkin' => true],
+                'component_name' => "<a href='/components/{$component->id}'>". e($component->name)."</a>",
+                'component_name2' => e($component->name),
+            ];
+        }
+
+        return (new DatatablesTransformer)->transformDatatables($array, $total);
+    }
+    public function transformCheckedout(Collection $checkouts, $total)
+    {
+        $array = [];
+        foreach ($checkouts as $checkout) {
+           $user = User::find($checkout->assigned_to_user_id);
+           $component  = Component::find($checkout->component_id);
+           $asset = Asset::find($checkout->asset_id);
+            $array[] = [
+                'id' => (int) $checkout->id,
+                'name' => /* e($asset->model->present()->name).' '.*/ e($asset->asset_tag),
+                'qty' => $checkout->assigned_qty,
+                'note' => $checkout->note,
+                'ticketnum' => $checkout->ticketnum,
+                'assigned_to_username' => "<a href='/users/{$user->id}'>". e($user->last_name.' '.e($user->first_name))."</a>" , // Получаем имя пользователя,
+                'assigned_to_username2' => e($user->last_name).' '.e($user->first_name), // Получаем имя пользователя,
+                'type' => 'asset',
+                'created_at' => Helper::getFormattedDateObject($checkout->created_at, 'datetime'),
                 'available_actions' => ['checkin' => true],
                 'component_name' => "<a href='/components/{$component->id}'>". e($component->name)."</a>",
                 'component_name2' => e($component->name),

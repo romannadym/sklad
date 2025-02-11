@@ -123,7 +123,8 @@
             locale: '{{ app()->getLocale() }}',
             exportOptions: export_options,
             exportTypes: ['xlsx', 'excel', 'csv', 'pdf','json', 'xml', 'txt', 'sql', 'doc' ],
-            onLoadSuccess: function () {
+            onLoadSuccess: function (data) {
+                console.log(data)
                 $('select[data-filter]').on('change', function () {
                     var filterName = $(this).data('filter'); // Имя фильтра
                     var selectedValue = $(this).val(); // Выбранное значение

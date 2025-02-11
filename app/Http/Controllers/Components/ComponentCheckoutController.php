@@ -8,6 +8,7 @@ use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Models\Asset;
 use App\Models\Component;
+use App\Models\ComponentCheckout;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -114,7 +115,14 @@ class ComponentCheckoutController extends Controller
             'ticketnum' => $request->input('ticketnum'),
             'assigned_to_user_id' => $request->input('assigned_to_user_id'),
         ]);
-
+        ComponentCheckout::create([ 
+            'component_id' => $component->id,
+            'assigned_qty' => $request->input('assigned_qty'),
+            'asset_id' => $request->input('asset_id'),
+            'note' => $request->input('note'),
+            'ticketnum' => $request->input('ticketnum'),
+            'assigned_to_user_id' => $request->input('assigned_to_user_id'),
+        ]);
         event(new CheckoutableCheckedOut($component, $asset, auth()->user(), $request->input('note')));
 
         $request->request->add(['checkout_to_type' => 'asset']);
