@@ -27,6 +27,7 @@ use App\Http\Requests\CustomAssetReportRequest;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\RedirectResponse;
 use App\Models\Component;
+use App\Models\ComponentCheckout;
 use App\Http\Transformers\ComponentsTransformer;
 
 /**
@@ -215,15 +216,14 @@ class ReportsController extends Controller
     {
         $this->authorize('reports.view');
         $component = Component::all();
-        foreach ($component as $item) {
-            $assets = $item->assets();
-            $total = $assets->count();
-            $assets = $assets->skip(0)->take(1000000000000)->get();
+        $checkout = ComponentCheckout::join('assets', 'assets.id', '=', 'component_checkouts.asset_id')
+        ->join('components', 'components.id', '=', 'component_checkouts.component_id')
+        ->join('users', 'users.id', '=', 'component_checkouts.assigned_to_user_id')->select('component_checkouts.*');
+        $total = $checkout->count();
             if($total > 0) {
-                $ass[] = (new ComponentsTransformer)->transformCheckedoutComponents($assets, $total);
+            $checkout = $checkout->skip(0)->take(1000000000000)->get();
+            $ass[] = (new ComponentsTransformer)->transformCheckedout($checkout, $total);
             }
-            
-        }
         $assetName = [];
         $componentName = [];
         if(isset($ass))

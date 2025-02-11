@@ -60,14 +60,14 @@ class ReportsCheckoutController extends Controller
                     }
                 }
             })
-            ->orderBy('component_checkouts.created_at', 'asc');
+            ->orderBy('component_checkouts.created_at', 'desc');
             $total = $checkout->count();
             if($total > 0) {
             $checkout = $checkout->skip($offset)->take($limit)->get();
             $ass[] = (new ComponentsTransformer)->transformCheckedout($checkout, $total);
             }
         } else {
-            $checkout = $checkout->orderBy('component_checkouts.created_at', 'asc');
+            $checkout = $checkout->orderBy('component_checkouts.created_at', 'desc');
                 $total = $checkout->count();
                 $checkout = $checkout->skip($offset)->take($limit)->get();
                 if($total > 0) {
@@ -92,7 +92,6 @@ class ReportsCheckoutController extends Controller
                 $result['total'] += $asset['total'];
             }
         }
-        $result['test'] = $ass;
         return response()->json($result, 200, [], JSON_NUMERIC_CHECK);
        // return (new ComponentsTransformer)->transformCheckedoutComponents($assets, $total);
     }

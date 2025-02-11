@@ -111,7 +111,7 @@ class ComponentsTransformer
            $asset = Asset::find($checkout->asset_id);
             $array[] = [
                 'id' => (int) $checkout->id,
-                'name' => /* e($asset->model->present()->name).' '.*/ e($asset->asset_tag),
+                'name' => /* e($asset->model->present()->name).' '.*/ $asset->asset_tag,
                 'qty' => $checkout->assigned_qty,
                 'note' => $checkout->note,
                 'ticketnum' => $checkout->ticketnum,

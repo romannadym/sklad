@@ -128,10 +128,9 @@
                 $('select[data-filter]').on('change', function () {
                     var filterName = $(this).data('filter'); // Имя фильтра
                     var selectedValue = $(this).val(); // Выбранное значение
-
+                   
                     // Получаем текущие фильтры из таблицы
                     var currentFilters = JSON.parse(table.bootstrapTable('getCookies').filterBy) || {};
-                    
                     // Обновляем или добавляем новый фильтр
                     currentFilters[filterName] = selectedValue;
                     console.log(currentFilters);
