@@ -41,7 +41,7 @@
             <div class="nav-tabs-custom">
                 <ul class="nav nav-tabs hidden-print">
 
-                    <li class="active">
+                    <li >
                         <a href="#details" data-toggle="tab">
                           <span class="hidden-lg hidden-md">
                             <x-icon type="info-circle" class="fa-2x" />
@@ -61,7 +61,7 @@
                         </a>
                     </li>
 
-                    <li>
+                    <li class="active">
                         <a href="#components" data-toggle="tab">
                           <span class="hidden-lg hidden-md">
                             <x-icon type="components" class="fa-2x" />
@@ -149,7 +149,7 @@
                 </ul>
 
                 <div class="tab-content">
-                    <div class="tab-pane fade in active" id="details">
+                    <div class="tab-pane fade" id="details">
                     <div class="row">
 
                             @if ($asset->deleted_at!='')
@@ -1154,7 +1154,7 @@
                         </div> <!-- row -->
                     </div> <!-- /.tab-pane software -->
 
-                    <div class="tab-pane fade" id="components">
+                    <div class="tab-pane fade in active" id="components">
                         <!-- checked out assets table -->
                         <div class="row{{($asset->components->count() > 0 ) ? '' : ' hidden-print'}}">
                             <div class="col-md-12">
