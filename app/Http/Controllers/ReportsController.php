@@ -58,7 +58,7 @@ class ReportsController extends Controller
         $this->authorize('reports.view');
 
         return view('reports/accessories');
-    } 
+    }
 
     /**
     * Exports the accessories to CSV
@@ -226,6 +226,7 @@ class ReportsController extends Controller
             }
         $assetName = [];
         $componentName = [];
+        $rows = [];
         if(isset($ass))
             {
                 foreach($ass as $key => $asset)
@@ -240,7 +241,7 @@ class ReportsController extends Controller
                             'ticketnum' => $row['ticketnum'],
                             'assigned_to_username' => $row['assigned_to_username2'],
                             'created_at' => $row['created_at']['datetime'],
-                            
+
                         ];
                         $assetName[] = $row['name'];
                         $componentName[] = $row['component_name2'];
@@ -258,13 +259,13 @@ class ReportsController extends Controller
      * @author [A. Gianotto] [<snipe@snipe.net>]
      * @since [v5.0.7]
      */
-    
+
     public function postCheckoutReport(Request $request) : StreamedResponse
     {
         ini_set('max_execution_time', 12000);
         $this->authorize('reports.view');
 
-       
+
         \Debugbar::disable();
         $response = new StreamedResponse(function () {
 
@@ -291,7 +292,7 @@ class ReportsController extends Controller
                 if($total > 0) {
                     $ass[] = (new ComponentsTransformer)->transformCheckedoutComponents($assets, $total);
                 }
-                
+
             }
             if(isset($ass))
             {
@@ -307,7 +308,7 @@ class ReportsController extends Controller
                             $row['ticketnum'],
                             $row['assigned_to_username2'],
                             $row['created_at']['datetime'],
-                            
+
                         ];
                         fputcsv($handle, $row);
                     }
@@ -358,11 +359,11 @@ class ReportsController extends Controller
         foreach($result['rows'] as $key => $row){
             $name[] = $row->name;
             $partnum[] = $row->partnum;
-            
+
         }
         $name = array_values(array_unique($name));
         $partnum = array_values(array_unique($partnum));
-      
+
         return view('reports/components',['items'=>$result, 'name'=>$name, 'partnum'=>$partnum]);
     }
 
@@ -486,7 +487,7 @@ class ReportsController extends Controller
      * @author [A. Gianotto] [<snipe@snipe.net>]
      * @since [v1.0]
      */
-    
+
     public function getLicenseReport() : View
     {
         $this->authorize('reports.view');
@@ -585,7 +586,7 @@ class ReportsController extends Controller
             // Open output stream
             $handle = fopen('php://output', 'w');
             stream_set_timeout($handle, 2000);
-            
+
             if ($request->filled('use_bom')) {
                 fprintf($handle, chr(0xEF).chr(0xBB).chr(0xBF));
             }
@@ -659,7 +660,7 @@ class ReportsController extends Controller
             if ($request->filled('rtd_location')) {
                 $header[] = trans('admin/hardware/form.default_location');
             }
-            
+
             if ($request->filled('rtd_location_address')) {
                 $header[] = trans('general.address');
                 $header[] = trans('general.address');
@@ -789,7 +790,7 @@ class ReportsController extends Controller
             $assets = Asset::select('assets.*')->with(
                 'location', 'assetstatus', 'company', 'defaultLoc', 'assignedTo',
                 'model.category', 'model.manufacturer', 'supplier');
-            
+
             if ($request->filled('by_location_id')) {
                 $assets->whereIn('assets.location_id', $request->input('by_location_id'));
             }
@@ -892,7 +893,7 @@ class ReportsController extends Controller
 
             Log::debug($assets->toSql());
             $assets->orderBy('assets.id', 'ASC')->chunk(20, function ($assets) use ($handle, $customfields, $request) {
-            
+
                 $executionTime = microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'];
                 Log::debug('Walking results: '.$executionTime);
                 $count = 0;
@@ -955,7 +956,7 @@ class ReportsController extends Controller
                     if ($request->filled('supplier')) {
                         $row[] = ($asset->supplier) ? $asset->supplier->name : '';
                     }
-                    
+
                     if ($request->filled('location')) {
                         $row[] = ($asset->location) ? $asset->location->present()->name() : '';
                     }
@@ -1143,7 +1144,7 @@ class ReportsController extends Controller
                         }
                     }
 
-                    
+
                     // CSV_ESCAPE_FORMULAS is set to false in the .env
                     if (config('app.escape_formulas') === false) {
                         fputcsv($handle, $row);
@@ -1271,7 +1272,7 @@ class ReportsController extends Controller
                 if ($acceptance->checkoutable){
                     $acceptance_checkoutable_flag = $acceptance->checkoutable->checkedOutToUser();
                 }
-                
+
                 return $acceptance->checkoutable_type == 'App\Models\Asset' && $acceptance_checkoutable_flag;
             })
             ->map(function($acceptance) {
@@ -1403,7 +1404,7 @@ class ReportsController extends Controller
         foreach ($assetsForReport as $item) {
 
             if ($item['assetItem'] != null){
-            
+
                 $row    = [ ];
                 $row[]  = str_replace(',', '', e($item['assetItem']->model->category->name));
                 $row[]  = str_replace(',', '', e($item['assetItem']->model->name));

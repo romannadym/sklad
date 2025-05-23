@@ -184,6 +184,8 @@ class IconHelper
                 return 'fa-regular fa-id-card';
             case 'department' :
                 return 'fa-solid fa-building-user';
+            case 'tickets' :
+                return 'fa-solid fa-clipboard-list';
 
         }
     }

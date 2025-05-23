@@ -84,7 +84,7 @@ dir="{{ Helper::determineLanguageDirection() }}">
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <script src="{{ url(asset('js/html5shiv.js')) }}" nonce="{{ csrf_token() }}"></script>
     <script src="{{ url(asset('js/respond.js')) }}" nonce="{{ csrf_token() }}"></script>
-    
+
 
 
 </head>
@@ -616,6 +616,14 @@ dir="{{ Helper::determineLanguageDirection() }}">
                                 </a>
                             </li>
                         @endcan
+                        @can('view', \App\Models\Ticket::class)
+                            <li{!! (Request::is('tickets*') ? ' class="active"' : '') !!}>
+                                <a href="{{ route('tickets.index') }}">
+                                    <x-icon type="tickets" class="fa-fw" />
+                                    <span>{{ trans('Заявки') }}</span>
+                                </a>
+                            </li>
+                        @endcan
                         @can('view', \App\Models\PredefinedKit::class)
                             <li{!! (Request::is('kits') ? ' class="active"' : '') !!}>
                                 <a href="{{ route('kits.index') }}">
@@ -674,7 +682,7 @@ dir="{{ Helper::determineLanguageDirection() }}">
                                             </a>
                                         </li>
                                     @endcan
-                                    
+
                                     @can('view', \App\Models\ComponentBook::class)
                                         <li {!! (Request::is('componentbooks*') ? ' class="active"' : '') !!}>
                                             <a href="{{ route('componentbooks.index') }}" {{ (Request::is('/componentbooks') ? ' class="active"' : '') }}>

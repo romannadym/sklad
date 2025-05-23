@@ -20,6 +20,7 @@ use App\Models\Manufacturer;
 use App\Models\PredefinedKit;
 use App\Models\Statuslabel;
 use App\Models\Supplier;
+use App\Models\Ticket;
 use App\Models\User;
 use App\Policies\AccessoryPolicy;
 use App\Policies\AssetModelPolicy;
@@ -39,6 +40,7 @@ use App\Policies\ManufacturerPolicy;
 use App\Policies\PredefinedKitPolicy;
 use App\Policies\StatuslabelPolicy;
 use App\Policies\SupplierPolicy;
+use App\Policies\TicketsPolicy;
 use App\Policies\UserPolicy;
 use Carbon\Carbon;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -72,6 +74,7 @@ class AuthServiceProvider extends ServiceProvider
         Statuslabel::class => StatuslabelPolicy::class,
         Supplier::class => SupplierPolicy::class,
         User::class => UserPolicy::class,
+        Ticket::class => TicketsPolicy::class,
         Manufacturer::class => ManufacturerPolicy::class,
         Company::class => CompanyPolicy::class,
     ];
@@ -196,7 +199,7 @@ class AuthServiceProvider extends ServiceProvider
             return $user->hasAccess('self.view_purchase_cost');
         });
 
-        // This is largely used to determine whether to display the gear icon sidenav 
+        // This is largely used to determine whether to display the gear icon sidenav
         // in the left-side navigation
         Gate::define('backend.interact', function ($user) {
             return $user->can('view', Statuslabel::class)
@@ -211,30 +214,33 @@ class AuthServiceProvider extends ServiceProvider
                 || $user->can('view', Manufacturer::class)
                 || $user->can('view', CustomField::class)
                 || $user->can('view', CustomFieldset::class)
-                || $user->can('view', Depreciation::class);
+                || $user->can('view', Depreciation::class)
+                || $user->can('view', Ticket::class);
         });
 
 
         // This  determines whether or not an API user should be able to get the selectlists.
         // This can seem a little confusing, since view properties may not have been granted
-        // to the logged in API user, but creating assets, licenses, etc won't work 
+        // to the logged in API user, but creating assets, licenses, etc won't work
         // if the user can't view and interact with the select lists.
         Gate::define('view.selectlists', function ($user) {
-            return $user->can('update', Asset::class) 
-                || $user->can('create', Asset::class)    
+            return $user->can('update', Asset::class)
+                || $user->can('create', Asset::class)
                 || $user->can('checkout', Asset::class)
                 || $user->can('checkin', Asset::class)
-                || $user->can('audit', Asset::class)       
-                || $user->can('update', License::class)   
-                || $user->can('create', License::class)   
+                || $user->can('audit', Asset::class)
+                || $user->can('update', License::class)
+                || $user->can('create', License::class)
                 || $user->can('update', Component::class)
-                || $user->can('create', Component::class)   
+                || $user->can('create', Component::class)
                 || $user->can('update', ComponentBook::class)
-                || $user->can('create', ComponentBook::class)   
-                || $user->can('update', Consumable::class)   
-                || $user->can('create', Consumable::class)   
+                || $user->can('create', ComponentBook::class)
+                || $user->can('update', Consumable::class)
+                || $user->can('create', Consumable::class)
                 || $user->can('update', Accessory::class)
-                || $user->can('create', Accessory::class)   
+                || $user->can('create', Accessory::class)
+                || $user->can('update', Ticket::class)
+                || $user->can('create', Ticket::class)
                 || $user->can('update', User::class)
                 || $user->can('create', User::class)
                 || ($user->hasAccess('reports.view'));

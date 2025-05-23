@@ -69,6 +69,9 @@
                     </select>
                 </div>
                 </th>
+                <th data-searchable="false" data-sortable="false" data-field="serial">
+                  {{ trans('general.serial_number') }}
+                </th>
                 <th data-searchable="false" data-sortable="false" data-field="qty">
                   {{ trans('general.qty') }}
                 </th>

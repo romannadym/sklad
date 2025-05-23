@@ -36,7 +36,7 @@ return [
         ],
     ],
 
-    'Reports' => [
+    'Отчеты' => [
         [
             'permission' => 'reports.view',
             'label'      => 'View',
@@ -45,7 +45,7 @@ return [
         ],
     ],
 
-    'Assets' => [
+    'Активы' => [
         [
             'permission' => 'assets.view',
             'label'      => 'View ',
@@ -115,7 +115,7 @@ return [
 
     ],
 
-    'Accessories' => [
+    'Аксессуары' => [
         [
             'permission' => 'accessories.view',
             'label'      => 'View ',
@@ -161,7 +161,7 @@ return [
 
     ],
 
-    'Consumables' => [
+    'Расходные материалы' => [
         [
             'permission' => 'consumables.view',
             'label'      => 'View',
@@ -201,7 +201,7 @@ return [
     ],
 
 
-    'Licenses' => [
+    'Лицензии' => [
         [
             'permission' => 'licenses.view',
             'label'      => 'View',
@@ -247,7 +247,7 @@ return [
     ],
 
 
-    'Components' => [
+    'Комопненты' => [
         [
             'permission' => 'components.view',
             'label'      => 'View',
@@ -293,7 +293,7 @@ return [
 
     ],
 
-    'ComponentBooks' => [
+    'Справочник компонентов' => [
         [
             'permission' => 'componentbooks.view',
             'label'      => 'View',
@@ -321,7 +321,7 @@ return [
 
     ],
 
-    'Kits' => [
+    'Готовые наборы' => [
         [
             'permission' => 'kits.view',
             'label'      => 'View ',
@@ -348,7 +348,7 @@ return [
         ],
     ],
 
-    'Users' => [
+    'Пользователи' => [
         [
             'permission' => 'users.view',
             'label'      => 'View ',
@@ -376,7 +376,7 @@ return [
 
     ],
 
-    'Models' => [
+    'Модели' => [
         [
             'permission' => 'models.view',
             'label'      => 'View ',
@@ -404,7 +404,7 @@ return [
 
     ],
 
-    'Categories' => [
+    'Категории' => [
         [
             'permission' => 'categories.view',
             'label'      => 'View ',
@@ -431,7 +431,7 @@ return [
         ],
     ],
 
-    'Departments' => [
+    'Департаменты' => [
         [
             'permission' => 'departments.view',
             'label'      => 'View ',
@@ -458,7 +458,7 @@ return [
         ],
     ],
 
-    'Status Labels' => [
+    'Метки состояния' => [
         [
             'permission' => 'statuslabels.view',
             'label'      => 'View ',
@@ -485,7 +485,7 @@ return [
         ],
     ],
 
-    'Custom Fields' => [
+    'Кастомные поля' => [
         [
             'permission' => 'customfields.view',
             'label'      => 'View',
@@ -512,7 +512,7 @@ return [
         ],
     ],
 
-    'Suppliers' => [
+    'Поставщики' => [
         [
             'permission' => 'suppliers.view',
             'label'      => 'View ',
@@ -540,7 +540,7 @@ return [
     ],
 
 
-    'Manufacturers' => [
+    'Производители' => [
         [
             'permission' => 'manufacturers.view',
             'label'      => 'View ',
@@ -567,7 +567,7 @@ return [
         ],
     ],
 
-    'Depreciations' => [
+    'Устаревание' => [
         [
             'permission' => 'depreciations.view',
             'label'      => 'View ',
@@ -594,7 +594,7 @@ return [
         ],
     ],
 
-    'Locations' => [
+    'Места' => [
         [
             'permission' => 'locations.view',
             'label'      => 'View ',
@@ -621,7 +621,7 @@ return [
         ],
     ],
 
-    'Companies' => [
+    'Компании' => [
         [
             'permission' => 'companies.view',
             'label'      => 'View ',
@@ -684,6 +684,37 @@ return [
             'permission' => 'self.view_purchase_cost',
             'label'      => 'View Purchase-Cost Column',
             'note'       => 'This user can see the purchase cost column of items assigned to them.',
+            'display'    => true,
+        ],
+
+    ],
+
+
+
+
+    'Заявки на компоненты' => [
+        [
+            'permission' => 'tickets.view',
+            'label'      => 'View',
+            'note'       => '',
+            'display'    => true,
+        ],
+        [
+            'permission' => 'tickets.create',
+            'label'      => 'Create ',
+            'note'       => '',
+            'display'    => true,
+        ],
+        [
+            'permission' => 'tickets.edit',
+            'label'      => 'Edit ',
+            'note'       => '',
+            'display'    => true,
+        ],
+        [
+            'permission' => 'tickets.delete',
+            'label'      => 'Delete ',
+            'note'       => '',
             'display'    => true,
         ],
 
