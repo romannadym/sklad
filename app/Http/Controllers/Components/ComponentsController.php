@@ -68,10 +68,11 @@ class ComponentsController extends Controller
      */
     public function store(ImageComponentUploadRequest $request)
     {
+        //die(json_encode($request->all(), JSON_UNESCAPED_UNICODE));
         $this->authorize('create', Component::class);
         $component = new Component();
         $component->name                   = $request->input('name');
-        $component->category_id            = 1;//$request->input('category_id');
+        $component->category_id            = $request->input('category_id');
         $component->supplier_id            = $request->input('supplier_id');
         $component->location_id            = $request->input('location_id');
         $component->company_id             = Company::getIdForCurrentUser($request->input('company_id'));
@@ -84,9 +85,9 @@ class ComponentsController extends Controller
         $component->created_by                = auth()->id();
         $component->notes                  = $request->input('notes');
         $component->partnum                  = $request->input('partnum');
-	$component->status                  = $request->input('status');
-	$component->customer                  = $request->input('customer');
-	$component = $request->handleImages($component);
+        $component->status                  = $request->input('status');
+        $component->customer                  = $request->input('customer');
+        $component = $request->handleImages($component);
 
         session()->put(['redirect_option' => $request->get('redirect_option')]);
 
@@ -150,7 +151,7 @@ class ComponentsController extends Controller
 
         // Update the component data
         $component->name                   = $request->input('name');
-        $component->category_id            = 1;//$request->input('category_id');
+        $component->category_id            = $request->input('category_id');
         $component->supplier_id            = $request->input('supplier_id');
         $component->location_id            = $request->input('location_id');
         $component->company_id             = Company::getIdForCurrentUser($request->input('company_id'));

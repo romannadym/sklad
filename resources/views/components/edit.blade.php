@@ -17,7 +17,7 @@
 @section('inputFields')
 
 @include ('partials.forms.edit.name', ['translated_name' => trans('admin/components/table.title')])
-{{-- @include ('partials.forms.edit.category-select', ['translated_name' => trans('general.category'), 'fieldname' => 'category_id','category_type' => 'component']) --}}
+@include ('partials.forms.edit.category-select', ['translated_name' => trans('general.category'), 'fieldname' => 'category_id','category_type' => 'component'])
 @include ('partials.forms.edit.quantity')
 {{--@include ('partials.forms.edit.minimum_quantity')--}}
 @include ('partials.forms.edit.serial', ['fieldname' => 'serial'])
@@ -35,3 +35,22 @@
 
 
 @stop
+<script src="{{ url(asset('js/jquery.js')) }}" nonce="{{ csrf_token() }}"></script>
+<script>
+  $(document).ready(function () {
+   var qty = $('#qty').val();
+   if(qty == '1'){
+    $('#serial').attr('required', true);
+   }
+   $('#qty').on('keyup', function () {
+    var qty = $('#qty').val();
+    if(qty > '1'){
+     $('#serial').removeAttr('required');
+     $('#serial').attr('disabled',true);
+   }else{
+    $('#serial').attr('required', true);
+    $('#serial').removeAttr('disabled');
+   }
+   });
+});
+</script>

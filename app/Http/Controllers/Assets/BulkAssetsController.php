@@ -107,7 +107,10 @@ class BulkAssetsController extends Controller
         $models = $assets->unique('model_id');
         $modelNames = [];
         foreach($models as $model) {
-            $modelNames[] = $model->model->name;
+            if(isset($model->model->name))
+            {
+              $modelNames[] = $model->model->name;
+            }
         }
 
         if ($request->filled('bulk_actions')) {
@@ -210,7 +213,7 @@ class BulkAssetsController extends Controller
 
        $custom_field_columns = CustomField::all()->pluck('db_column')->toArray();
 
-     
+
         if (! $request->filled('ids') || count($request->input('ids')) == 0) {
             return redirect($bulk_back_url)->with('error', trans('admin/hardware/message.update.no_assets_selected'));
         }
@@ -269,7 +272,7 @@ class BulkAssetsController extends Controller
                     ->conditionallyAddItem('warranty_months')
                     ->conditionallyAddItem('next_audit_date');
                     foreach ($custom_field_columns as $key => $custom_field_column) {
-                        $this->conditionallyAddItem($custom_field_column); 
+                        $this->conditionallyAddItem($custom_field_column);
                    }
 
                 if (!($asset->eol_explicit)) {
@@ -287,8 +290,8 @@ class BulkAssetsController extends Controller
 					} elseif (($request->filled('purchase_date')) && ($asset->model->eol > 0)) {
 						$this->update_array['asset_eol_date'] = Carbon::parse($request->input('purchase_date'))->addMonths($asset->model->eol)->format('Y-m-d');
 					}
-				}                
-                
+				}
+
                 /**
                  * Blank out fields that were requested to be blanked out via checkbox
                  */
@@ -599,7 +602,7 @@ class BulkAssetsController extends Controller
         } catch (ModelNotFoundException $e) {
             return redirect()->route('hardware.bulkcheckout.show')->with('error', $e->getErrors());
         }
-        
+
     }
     public function restore(Request $request) : RedirectResponse
     {
@@ -612,7 +615,7 @@ class BulkAssetsController extends Controller
             foreach ($assetIds as $key => $assetId) {
                 $asset = Asset::withTrashed()->find($assetId);
                 $asset->restore();
-            } 
+            }
             return redirect()->route('hardware.index')->with('success', trans('admin/hardware/message.restore.success'));
         }
     }
