@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Ticket;
 use App\Http\Controllers\Controller;
 use App\Helpers\Helper;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Validator;
@@ -67,8 +68,20 @@ class TicketController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Ticket $ticket)
+    public function destroy($ticketId) : RedirectResponse
     {
-        //
+      $this->authorize('delete', Ticket::class);
+      // Check if the Statuslabel exists
+      if (is_null($ticket = Ticket::find($ticketId))) {
+          return redirect()->route('tickets.index')->with('error', 'При удалении заявки возникла проблема. Пожалуйста попробуйте снова.');
+      }
+
+      // Check that there are no assets associated
+      if ($ticket->delete()) {
+
+          return redirect()->route('tickets.index')->with('success', 'Заявка успешно удалена!');
+      }
+
+      return redirect()->route('tickets.index')->with('error', 'Ошибка удаления, эта заявка связана с другими обьектами!');
     }
 }

@@ -58,6 +58,7 @@ class TicketPresenter extends Presenter
               'sortable' => true,
               'title' => 'Имя инженера',
               'visible' => true,
+              'formatter' => 'usersLinkObjFormatter'
           ],
           [
               'field' => 'sd_ticket_id',
@@ -91,7 +92,15 @@ class TicketPresenter extends Presenter
               'formatter' => 'dateDisplayFormatter',
           ],
         ];
-
+        $layout[] = [
+            'field' => 'checkincheckout',
+            'searchable' => false,
+            'sortable' => false,
+            'switchable' => false,
+            'title' => trans('general.checkout'),//trans('general.checkin').'/'.trans('general.checkout'),
+            'visible' => true,
+            'formatter' => 'ticketsInOutFormatter',
+        ];
         $layout[] = [
             'field' => 'actions',
             'searchable' => false,

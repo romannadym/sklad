@@ -519,9 +519,15 @@
         return function (value,row) {
 
             // The user is allowed to check items out, AND the item is deployable
+            console.log(row)
             if ((row.available_actions.checkout == true) && (row.user_can_checkout == true) && ((!row.asset_id) && (!row.assigned_to))) {
-
+                if(destination =='tickets') {
+                    let note = 'Выдано инженеру';
+                    return '<a href="{{ config('app.url') }}/components/' + row.component.id + '/checkout?asset_id='+ row.asset_name.id +'&user_id='+ row.requester_name.id +'&ticket_id='+ row.id +'&note='+ note +'" class="btn btn-sm bg-maroon" data-tooltip="true" title="{{ trans('general.checkout_tooltip') }}">{{ trans('general.checkout') }}</a>';
+                } else {
                     return '<a href="{{ config('app.url') }}/' + destination + '/' + row.id + '/checkout" class="btn btn-sm bg-maroon" data-tooltip="true" title="{{ trans('general.checkout_tooltip') }}">{{ trans('general.checkout') }}</a>';
+                }
+
 
             // The user is allowed to check items out, but the item is not able to be checked out
             } else if (((row.user_can_checkout == false)) && (row.available_actions.checkout == true) && (!row.assigned_to)) {
@@ -529,6 +535,8 @@
                 // We use slightly different language for assets versus other things, since they are the only
                 // item that has a status label
                 if (destination =='hardware') {
+                    return '<span  data-tooltip="true" title="{{ trans('admin/hardware/general.undeployable_tooltip') }}"><a class="btn btn-sm bg-maroon disabled">{{ trans('general.checkout') }}</a></span>';
+                } else if(destination =='tickets') {
                     return '<span  data-tooltip="true" title="{{ trans('admin/hardware/general.undeployable_tooltip') }}"><a class="btn btn-sm bg-maroon disabled">{{ trans('general.checkout') }}</a></span>';
                 } else {
                     return '<span  data-tooltip="true" title="{{ trans('general.undeployable_tooltip') }}"><a class="btn btn-sm bg-maroon disabled">{{ trans('general.checkout') }}</a></span>';

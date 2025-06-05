@@ -37,11 +37,14 @@ class TicketsTransformer
             ] : null,
             'asset_serial' => e($ticket->asset_serial),
             'requester_email' => e($ticket->requester_email),
-            'requester_name' => e($ticket->requester_name),
+            'requester_name' => ($ticket->id) ? [
+              'id' => e($ticket->user_id),
+              'name' => e($ticket->requester_name),
+            ] : null,
             'sd_ticket_id' => e($ticket->sd_ticket_id),
             'component' => ($component->id) ? [
                 'id' => (int) $component->id,
-                'name' => e($component->name),
+                'name' => e($component->name) . ' (P/n ' . e($component->partnum) . ')',
             ] : null,
             'statuslabels' => ($statusLabel->id) ? [
               'id' => (int) $statusLabel->id,
@@ -54,9 +57,12 @@ class TicketsTransformer
             ] : null,
             'created_at' => Helper::getFormattedDateObject($ticket->created_at, 'datetime'),
             'updated_at' => Helper::getFormattedDateObject($ticket->updated_at, 'datetime'),
+            'user_can_checkout' =>  ($component->numRemaining() > 0) ? 1 : 0,
         ];
 
         $permissions_array['available_actions'] = [
+            'checkout' => Gate::allows('checkout', $component),
+            'checkin' => Gate::allows('checkin', $component),
             'update' => Gate::allows('update', Ticket::class),
             'delete' => Gate::allows('delete', Ticket::class),
         ];

@@ -417,7 +417,7 @@
                                                     {{ $asset->assetstatus->name }}
                                                     <label class="label label-default">{{ trans('general.deployed') }}</label>
 
-                                                
+
                                                     <x-icon type="long-arrow-right" />
                                                     <x-icon type="{{ $asset->assignedType() }}" class="fa-fw" />
                                                     {!!  $asset->assignedTo->present()->nameUrl() !!}
@@ -1099,7 +1099,7 @@
                                             {{ ($asset->userRequests) ? (int) $asset->userRequests->count() : '0' }}
                                         </div>
                                     </div>
-                                    
+
                                 </div> <!--/end striped container-->
                             </div> <!-- end col-md-9 -->
                         </div><!-- end info-stack-container -->
@@ -1163,8 +1163,10 @@
                                         <thead>
                                         <th>{{ trans('general.name') }}</th>
                                         <th>{{ trans('general.qty') }}</th>
-                                        <th>{{ trans('general.purchase_cost') }}</th>
+                                    <!--    <th>{{ trans('general.purchase_cost') }}</th> -->
                                         <th>{{trans('admin/hardware/form.serial')}}</th>
+                                        <th>Примечание</th>
+                                        <th>Номер заявки</th>
                                         <th>{{trans('general.checkin')}}</th>
                                         <th></th>
                                         </thead>
@@ -1179,8 +1181,10 @@
                                                         <a href="{{ route('components.show', $component->id) }}">{{ $component->name }}</a>
                                                     </td>
                                                     <td>{{ $component->pivot->assigned_qty }}</td>
-                                                    <td>{{ Helper::formatCurrencyOutput($component->purchase_cost) }} each</td>
+                                                  <!--  <td>{{ Helper::formatCurrencyOutput($component->purchase_cost) }} each</td> -->
                                                     <td>{{ $component->serial }}</td>
+                                                    <td>{{ $component->pivot->note }}</td>
+                                                    <td>{{ $component->pivot->ticketnum }}</td>
                                                     <td>
                                                         <a href="{{ route('components.checkin.show', $component->pivot->id) }}" class="btn btn-sm bg-purple hidden-print" data-tooltip="true">{{ trans('general.checkin') }}</a>
                                                     </td>

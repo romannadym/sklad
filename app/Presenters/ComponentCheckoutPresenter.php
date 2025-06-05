@@ -28,44 +28,44 @@ class ComponentCheckoutPresenter extends Presenter
                 'sortable' => true,
                 'title' => Заказчик,
                 'visible' => true,
-            ], 
+            ],
             [
                 'field' => 'component_name',
                 'searchable' => true,
                 'sortable' => true,
                 'title' => 'Компонент',
-	        'visible' => true, 
-	        ], 
+	        'visible' => true,
+	        ],
             [
                 'field' => 'qty',
                 'searchable' => true,
                 'sortable' => true,
                 'title' => 'Кол-во',
-	        'visible' => true, 
-	        ], 
+	        'visible' => true,
+	        ],
             [
                 'field' => 'note',
                 'searchable' => true,
                 'sortable' => true,
                 'title' => 'Примечание',
-	        'visible' => true, 
-	        ], 
+	        'visible' => true,
+	        ],
             [
                 'field' => 'ticketnum',
                 'searchable' => true,
                 'sortable' => true,
                 'title' => 'Номер заявки',
-	        'visible' => true, 
+	        'visible' => true,
 	        ],
             [
                 'field' => 'assigned_to_username',
                 'searchable' => true,
                 'sortable' => true,
                 'title' => 'Инженер',
-	        'visible' => true, 
-	        ],  
+	        'visible' => true,
+	        ],
         ];
-     
+
         $layout[] = [
             'field' => 'actions',
             'searchable' => false,
@@ -78,5 +78,5 @@ class ComponentCheckoutPresenter extends Presenter
         return json_encode($layout);
     }
 
-    
+
 }

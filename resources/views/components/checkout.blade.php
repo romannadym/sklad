@@ -26,8 +26,29 @@
 
         <div class="box-body">
           <!-- Asset -->
-            @include ('partials.forms.edit.asset-select', ['translated_name' => trans('general.select_asset'), 'fieldname' => 'asset_id'])
-            @include ('partials.forms.edit.user-select', ['translated_name' => trans('Инженер'), 'fieldname' => 'assigned_to_user_id', 'label' => trans('Инженер')])
+            @if(isset($assetId) && $assetId)
+              @include ('partials.forms.edit.asset-select', [
+                  'translated_name' => trans('general.select_asset'),
+                  'fieldname' => 'asset_id',
+                  'asset' => \App\Models\Asset::find($assetId) // передаем найденный asset
+              ])
+            @else
+              @include ('partials.forms.edit.asset-select', [
+                  'translated_name' => trans('general.select_asset'),
+                  'fieldname' => 'asset_id'
+              ])
+            @endif
+
+            @php
+                $selectedUser = isset($userId) && $userId ? \App\Models\User::find($userId) : null;
+            @endphp
+
+            @include ('partials.forms.edit.user-select', [
+                'translated_name' => trans('Инженер'),
+                'fieldname' => 'assigned_to_user_id',
+                'label' => trans('Инженер'),
+                'item' => (object)['assigned_to_user_id' => $selectedUser ? $selectedUser->id : null]
+            ])
             <div class="form-group {{ $errors->has('assigned_qty') ? ' has-error' : '' }}">
               <label for="assigned_qty" class="col-md-3 control-label">
                 {{ trans('general.qty') }}
@@ -45,7 +66,7 @@
               <label for="ticketnum" class="col-md-3 control-label">
                 {{ trans('Серийный номер') }}
             </label>
-              <div class="col-md-2 col-sm-5 col-xs-5"> 
+              <div class="col-md-2 col-sm-5 col-xs-5">
                 <input class="form-control required col-md-12" required  type="text" name="serial[1]" id="serial_1" value="{{ empty($component->serial) ? old('serial.1',$component->serial[1] ?? '') : $component->serial }}"
                 />
               </div>
@@ -56,24 +77,24 @@
                 @endif
             </div>
             <div id="serial_numbers_container">
-           
+
             </div>
             <div class="form-group">
               <label for="ticketnum" class="col-md-3 control-label">
                 {{ trans('Номер заявки') }}
               </label>
-              <div class="col-md-2 col-sm-5 col-xs-5"> 
-                <input class="form-control required col-md-12" type="text" name="ticketnum" id="ticketnum" value="{{ old('ticketnum') ?? '' }}"/>
+              <div class="col-md-2 col-sm-5 col-xs-5">
+                <input class="form-control required col-md-12" type="text" name="ticketnum" id="ticketnum" value="{{ old('ticketnum', $ticketId ?? '') }}"/>
               </div>
-              
+
             </div>
-            
+
 
             <!-- Note -->
             <div class="form-group{{ $errors->has('note') ? ' error' : '' }}">
               <label for="note" class="col-md-3 control-label">{{ trans('admin/hardware/form.notes') }}</label>
               <div class="col-md-7">
-                <textarea class="col-md-6 form-control" id="note" name="note" style=" resize: vertical;">{{ old('note', $component->note) }}</textarea>
+                <textarea class="col-md-6 form-control" id="note" name="note" style=" resize: vertical;">{{ old('note', $note ?? $component->note ?? '') }}</textarea>
                 {!! $errors->first('note', '<span class="alert-msg" aria-hidden="true"><i class="fas fa-times" aria-hidden="true"></i> :message</span>') !!}
               </div>
             </div>

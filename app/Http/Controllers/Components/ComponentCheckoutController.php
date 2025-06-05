@@ -29,13 +29,16 @@ class ComponentCheckoutController extends Controller
      */
     public function create($id)
     {
-
+        $assetId = request()->input('asset_id'); // или request('asset_id')
+        $userId = request()->input('user_id');
+        $ticketId = request()->input('ticket_id');
+        $note = request()->input('note');
         if ($component = Component::find($id)) {
 
             $this->authorize('checkout', $component);
 
             // Make sure the category is valid
-            if ($component->category) { 
+            if ($component->category) {
 
                 // Make sure there is at least one available to checkout
                 if ($component->numRemaining() <= 0){
@@ -43,9 +46,10 @@ class ComponentCheckoutController extends Controller
                         ->with('error', trans('admin/components/message.checkout.unavailable'));
                 }
 
-                // Return the checkout view 
+                // Return the checkout view
                 $component->remaining = (int)$component->numRemaining();
-                return view('components/checkout', compact('component'));
+
+                return view('components/checkout', compact('component','assetId','userId','ticketId','note'));
             }
 
             // Invalid category
@@ -94,7 +98,7 @@ class ComponentCheckoutController extends Controller
                 ->withInput()
                 ->with('duplicate_serials', $duplicate_serials);
         }
-        
+
         $max_to_checkout = $component->numRemaining();
 
         // Make sure there are at least the requested number of components available to checkout
@@ -131,7 +135,7 @@ class ComponentCheckoutController extends Controller
             }
 
             // Update the component data
-       
+
             $component->asset_id = $request->input('asset_id');
             $component->assets()->attach($component->id, [
                 'component_id' => $component->id,
@@ -143,7 +147,7 @@ class ComponentCheckoutController extends Controller
                 'ticketnum' => $request->input('ticketnum'),
                 'assigned_to_user_id' => $request->input('assigned_to_user_id'),
             ]);
-            ComponentCheckout::create([ 
+            ComponentCheckout::create([
                 'component_id' => $component->id,
                 'assigned_qty' => 1,
                 'asset_id' => $request->input('asset_id'),
@@ -155,7 +159,7 @@ class ComponentCheckoutController extends Controller
             unset($component->asset_id);
         }
 
-        else if ($request->get('assigned_qty') == $component->qty && $component->qty > 1) 
+        else if ($request->get('assigned_qty') == $component->qty && $component->qty > 1)
         {
             $i = 1;
             foreach($request->get('serial') as $key => $serial)
@@ -166,7 +170,7 @@ class ComponentCheckoutController extends Controller
                     $component->save();
 
                     // Update the component data
-       
+
                     $component->asset_id = $request->input('asset_id');
                     $component->assets()->attach($component->id, [
                         'component_id' => $component->id,
@@ -178,7 +182,7 @@ class ComponentCheckoutController extends Controller
                         'ticketnum' => $request->input('ticketnum'),
                         'assigned_to_user_id' => $request->input('assigned_to_user_id'),
                     ]);
-                    ComponentCheckout::create([ 
+                    ComponentCheckout::create([
                         'component_id' => $component->id,
                         'assigned_qty' => 1,
                         'asset_id' => $request->input('asset_id'),
@@ -211,7 +215,7 @@ class ComponentCheckoutController extends Controller
                         $component->save();
 
                         // Update the component data
-        
+
                         $componentNew->asset_id = $request->input('asset_id');
                         $componentNew->assets()->attach($componentNew->id, [
                             'component_id' => $componentNew->id,
@@ -223,7 +227,7 @@ class ComponentCheckoutController extends Controller
                             'ticketnum' => $request->input('ticketnum'),
                             'assigned_to_user_id' => $request->input('assigned_to_user_id'),
                         ]);
-                        ComponentCheckout::create([ 
+                        ComponentCheckout::create([
                             'component_id' => $componentNew->id,
                             'assigned_qty' => 1,
                             'asset_id' => $request->input('asset_id'),
@@ -235,7 +239,7 @@ class ComponentCheckoutController extends Controller
                         unset($componentNew->asset_id);
                     }
                 }
-                
+
 
                 $i++;
             }
@@ -276,7 +280,7 @@ class ComponentCheckoutController extends Controller
                         'ticketnum' => $request->input('ticketnum'),
                         'assigned_to_user_id' => $request->input('assigned_to_user_id'),
                     ]);
-                    ComponentCheckout::create([ 
+                    ComponentCheckout::create([
                         'component_id' => $componentNew->id,
                         'assigned_qty' => 1,
                         'asset_id' => $request->input('asset_id'),
@@ -289,7 +293,7 @@ class ComponentCheckoutController extends Controller
                 }
             }
         }
-        
+
 
         $request->request->add(['checkout_to_type' => 'asset']);
         $request->request->add(['assigned_asset' => $asset->id]);
