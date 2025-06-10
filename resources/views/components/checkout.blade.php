@@ -26,35 +26,60 @@
 
         <div class="box-body">
           <!-- Asset -->
-            @if(isset($assetId) && $assetId)
-              @include ('partials.forms.edit.asset-select', [
-                  'translated_name' => trans('general.select_asset'),
-                  'fieldname' => 'asset_id',
-                  'asset' => \App\Models\Asset::find($assetId) // передаем найденный asset
+          @if(isset($assetId) && $assetId)
+            @include ('partials.forms.edit.asset-select', [
+                'translated_name' => trans('general.select_asset'),
+                'fieldname' => 'asset_visible',
+                'asset' => \App\Models\Asset::find($assetId), // передаем найденный asset
+                'disabled' => true
+            ])
+            <script type="text/javascript">
+            let asset_id = $('#assigned_asset_select').val();
+            $('#assigned_asset').append(`
+              <select class="hidden" name="asset_id">
+                <option value="${asset_id}" selected="selected"></option>
+              </select>
+              `)
+            </script>
+
+          @else
+            @include ('partials.forms.edit.asset-select', [
+                'translated_name' => trans('general.select_asset'),
+                'fieldname' => 'asset_id'
+            ])
+          @endif
+          @php
+              $selectedUser = isset($userId) && $userId ? \App\Models\User::find($userId) : null;
+          @endphp
+            @if($selectedUser)
+              @include ('partials.forms.edit.user-select', [
+                  'translated_name' => trans('Инженер'),
+                  'fieldname' => 'assigned_to_user_visible',
+                  'label' => trans('Инженер'),
+                  'item' => (object)['assigned_to_user_visible' => $selectedUser ? $selectedUser->id : null],
+                  'disabled' => isset($ticketId) ? true : false
               ])
+              <script type="text/javascript">
+              let user_id = $('#assigned_user_select').val();
+              $('#assigned_user').append(`
+                <select class="hidden" name="assigned_to_user_id">
+                  <option value="${user_id}" selected="selected"></option>
+                </select>
+                `)
+              </script>
             @else
-              @include ('partials.forms.edit.asset-select', [
-                  'translated_name' => trans('general.select_asset'),
-                  'fieldname' => 'asset_id'
+              @include ('partials.forms.edit.user-select', [
+                  'translated_name' => trans('Инженер'),
+                  'fieldname' => 'assigned_to_user_id',
+                  'label' => trans('Инженер'),
               ])
             @endif
-
-            @php
-                $selectedUser = isset($userId) && $userId ? \App\Models\User::find($userId) : null;
-            @endphp
-
-            @include ('partials.forms.edit.user-select', [
-                'translated_name' => trans('Инженер'),
-                'fieldname' => 'assigned_to_user_id',
-                'label' => trans('Инженер'),
-                'item' => (object)['assigned_to_user_id' => $selectedUser ? $selectedUser->id : null]
-            ])
             <div class="form-group {{ $errors->has('assigned_qty') ? ' has-error' : '' }}">
               <label for="assigned_qty" class="col-md-3 control-label">
                 {{ trans('general.qty') }}
               </label>
               <div class="col-md-2 col-sm-5 col-xs-5">
-                <input class="form-control required col-md-12" type="number" name="assigned_qty" min="1" max="10" id="assigned_qty" value="{{ old('assigned_qty') ?? 1 }}" oninput="this.value = Math.min({{$component->remaining}}, Math.max(0, this.value))" />
+                <input class="form-control required col-md-12" {{ isset($ticketId) ? 'readonly' : '' }}  type="number" name="assigned_qty"  min="1" max="10" id="assigned_qty" value="{{ old('assigned_qty') ?? 1 }}" oninput="this.value = Math.min({{$component->remaining}}, Math.max(0, this.value))" />
               </div>
               @if ($errors->first('assigned_qty'))
                 <div class="col-md-9 col-md-offset-3">
@@ -67,7 +92,7 @@
                 {{ trans('Серийный номер') }}
             </label>
               <div class="col-md-2 col-sm-5 col-xs-5">
-                <input class="form-control required col-md-12" required  type="text" name="serial[1]" id="serial_1" value="{{ empty($component->serial) ? old('serial.1',$component->serial[1] ?? '') : $component->serial }}"
+                <input class="form-control required col-md-12" required  {{ isset($ticketId) ? 'readonly' : '' }} type="text"  name="serial[1]" id="serial_1" value="{{ empty($component->serial) ? old('serial.1',$component->serial[1] ?? '') : $component->serial }}"
                 />
               </div>
               @if (isset(session('duplicate_serials')[1]))
@@ -84,7 +109,7 @@
                 {{ trans('Номер заявки') }}
               </label>
               <div class="col-md-2 col-sm-5 col-xs-5">
-                <input class="form-control required col-md-12" type="text" name="ticketnum" id="ticketnum" value="{{ old('ticketnum', $ticketId ?? '') }}"/>
+                <input class="form-control required col-md-12" {{ isset($ticketId) ? 'readonly' : '' }}  type="text" name="ticketnum" id="ticketnum" value="{{ old('ticketnum', $ticketId ?? '') }}"/>
               </div>
 
             </div>
@@ -94,7 +119,7 @@
             <div class="form-group{{ $errors->has('note') ? ' error' : '' }}">
               <label for="note" class="col-md-3 control-label">{{ trans('admin/hardware/form.notes') }}</label>
               <div class="col-md-7">
-                <textarea class="col-md-6 form-control" id="note" name="note" style=" resize: vertical;">{{ old('note', $note ?? $component->note ?? '') }}</textarea>
+                <textarea class="col-md-6 form-control disabled" id="note" {{ isset($ticketId) ? 'readonly' : '' }} name="note" style=" resize: vertical;">{{ old('note', $note ?? $component->note ?? '') }}</textarea>
                 {!! $errors->first('note', '<span class="alert-msg" aria-hidden="true"><i class="fas fa-times" aria-hidden="true"></i> :message</span>') !!}
               </div>
             </div>

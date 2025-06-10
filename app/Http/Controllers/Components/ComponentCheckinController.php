@@ -7,6 +7,7 @@ use App\Events\ComponentCheckedIn;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Models\Asset;
+use App\Models\Ticket;
 use App\Models\Component;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -59,6 +60,7 @@ class ComponentCheckinController extends Controller
      */
     public function store(Request $request, $component_asset_id, $backto = null)
     {
+
         if ($component_assets = DB::table('components_assets')->find($component_asset_id)) {
             if (is_null($component = Component::find($component_assets->component_id))) {
 
@@ -87,6 +89,11 @@ class ComponentCheckinController extends Controller
             $component_assets->assigned_qty = $qty_remaining_in_checkout;
             DB::table('components_assets')->where('id',
                 $component_asset_id)->update(['assigned_qty' => $qty_remaining_in_checkout]);
+            if($component->location_id != $request->input('location_id'))
+            {
+              $component->location_id = $request->input('location_id');
+              $component->save();
+            }
 
             // If the checked-in qty is exactly the same as the assigned_qty,
             // we can simply delete the associated components_assets record
@@ -99,6 +106,24 @@ class ComponentCheckinController extends Controller
             event(new CheckoutableCheckedIn($component, $asset, auth()->user(), $request->input('note'), Carbon::now()));
 
             session()->put(['redirect_option' => $request->get('redirect_option')]);
+
+            $ticket = Ticket::where('component_id', $component->id)->first();
+            if($request->input('cancel') == 1 )
+            {
+              if($ticket)
+              {
+                $ticket->status_id = 14;
+                $ticket->save();
+              }
+            }
+            else
+            {
+              if($ticket)
+              {
+                $ticket->status_id = 13;
+                $ticket->save();
+              }
+            }
 
             return redirect()->to(Helper::getRedirectOption($request, $component->id, 'Components'))->with('success',
                 trans('admin/components/message.checkin.success'));

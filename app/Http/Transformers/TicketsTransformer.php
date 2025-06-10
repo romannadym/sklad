@@ -28,6 +28,7 @@ class TicketsTransformer
         $component = Component::find($ticket->component_id);
         $asset = Asset::find($ticket->asset_id);
         $statusLabel = Statuslabel::find($ticket->status_id);
+
         $array = [
             'id' => (int) $ticket->id,
             'name' => e($ticket->asset_name) . '(S/n: ' . e($ticket->asset_serial) . ')',
@@ -45,6 +46,7 @@ class TicketsTransformer
             'component' => ($component->id) ? [
                 'id' => (int) $component->id,
                 'name' => e($component->name) . ' (P/n ' . e($component->partnum) . ')',
+                'checkin_id' => $component->assets()->where('asset_id', $ticket->asset_id)->first()->pivot->id ?? null
             ] : null,
             'statuslabels' => ($statusLabel->id) ? [
               'id' => (int) $statusLabel->id,
@@ -63,7 +65,7 @@ class TicketsTransformer
         $permissions_array['available_actions'] = [
             'checkout' => Gate::allows('checkout', $component),
             'checkin' => Gate::allows('checkin', $component),
-            'update' => Gate::allows('update', Ticket::class),
+        //    'update' => Gate::allows('update', Ticket::class),
             'delete' => Gate::allows('delete', Ticket::class),
         ];
         $array += $permissions_array;

@@ -31,6 +31,7 @@ class TicketsController extends Controller
           [
               'id',
               'asset_name',
+              'status_id'
           ];
         $tickets = Ticket::select('tickets.*'); //
         if ($request->filled('search')) {
@@ -167,7 +168,7 @@ class TicketsController extends Controller
     public function update(Request $request, $id) : JsonResponse
     {
       $ticket = Ticket::find($id);
-
+      $status_id = $request->get('status_id');
       if (!$ticket) {
           return response()->json(['error' => 'Ticket not found'], 404);
       }
@@ -175,32 +176,29 @@ class TicketsController extends Controller
       if (!$component) {
           return response()->json(['error' => 'Ticket not found'], 404);
       }
-      $component->assets()->attach($component->id, [
-          'component_id' => $component->id,
-          'created_by' => auth()->user()->id,
-          'created_at' => date('Y-m-d H:i:s'),
-          'assigned_qty' => 1,
-          'asset_id' => $ticket->asset_id,
-          'note' => 'Выдан через API из сервисдеска',
-          'ticketnum' => $id,
-          'assigned_to_user_id' => $ticket->user_id,
-      ]);
-      $checkout = ComponentCheckout::create([
-          'component_id' => $ticket->component_id,
-          'assigned_qty' => 1,
-          'asset_id' => $ticket->asset_id,
-          'note' => 'Выдан через API из сервисдеска',
-          'ticketnum' => $id,
-          'assigned_to_user_id' => $ticket->user_id,
-      ]);
-      if($checkout && $checkout->id){
-        $ticket->status_id = $request->get('status_id');
-        $ticket->save();
+      if($status_id == 11)
+      {
+        $component->assets()->wherePivot('asset_id', $ticket->asset_id)->update([
+            'note' => 'Установлено через API из сервисдеска',
+            'ticketnum' => $ticket->id
+        ]);
+
+        $checkout = ComponentCheckout::create([
+            'component_id' => $ticket->component_id,
+            'assigned_qty' => 1,
+            'asset_id' => $ticket->asset_id,
+            'note' => 'Установлено через API из сервисдеска',
+            'ticketnum' => $id,
+            'assigned_to_user_id' => $ticket->user_id,
+        ]);
       }
+
+        $ticket->status_id = $status_id;
+        $ticket->save();
       return response()->json([
       'success' => true,
       'ticket' => $ticket,
-      'checkout_id' => $checkout->id,
+      'checkout_id' => $checkout->id ?? null,
       ], 200);
     }
 

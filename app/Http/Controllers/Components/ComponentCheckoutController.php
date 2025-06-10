@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Components;
 use App\Events\CheckoutableCheckedOut;
 use App\Events\ComponentCheckedOut;
 use App\Helpers\Helper;
+use App\Models\Ticket;
 use App\Http\Controllers\Controller;
 use App\Models\Asset;
 use App\Models\Component;
@@ -292,6 +293,13 @@ class ComponentCheckoutController extends Controller
                     unset($componentNew->asset_id);
                 }
             }
+        }
+        $ticket_id = $request->input('ticket_id');
+        $ticket = Ticket::where('id', $ticket_id)->first();
+        if($ticket)
+        {
+          $ticket->status_id = 10;
+          $ticket->save();
         }
 
 

@@ -138,7 +138,7 @@ class Component extends SnipeModel
     }
     public function users()
     {
-        return $this->belongsToMany(\App\Models\User::class, 'components_assets')
+        return $this->belongsToMany(\App\Models\User::class, 'components_assets', 'component_id', 'assigned_to_user_id')
                     ->withPivot('id', 'assigned_qty', 'note', 'ticketnum', 'created_at', 'created_by','assigned_to_user_id') // Указываем дополнительные поля
                     ->withTimestamps(); // Загружаем временные метки
     }

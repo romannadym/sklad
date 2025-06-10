@@ -523,7 +523,7 @@
             if ((row.available_actions.checkout == true) && (row.user_can_checkout == true) && ((!row.asset_id) && (!row.assigned_to))) {
                 if(destination =='tickets') {
                     let note = 'Выдано инженеру';
-                    return '<a href="{{ config('app.url') }}/components/' + row.component.id + '/checkout?asset_id='+ row.asset_name.id +'&user_id='+ row.requester_name.id +'&ticket_id='+ row.id +'&note='+ note +'" class="btn btn-sm bg-maroon" data-tooltip="true" title="{{ trans('general.checkout_tooltip') }}">{{ trans('general.checkout') }}</a>';
+                    return '<a href="{{ config('app.url') }}/components/' + row.component.id + '/checkout?asset_id='+ row.asset_name.id +'&user_id='+ row.requester_name.id +'&ticket_id='+ row.id +'&note='+ note +'" class="btn btn-sm bg-maroon" data-tooltip="true" title="{{ trans('general.checkout_tooltip') }}">Выдать</a>';
                 } else {
                     return '<a href="{{ config('app.url') }}/' + destination + '/' + row.id + '/checkout" class="btn btn-sm bg-maroon" data-tooltip="true" title="{{ trans('general.checkout_tooltip') }}">{{ trans('general.checkout') }}</a>';
                 }
@@ -537,7 +537,8 @@
                 if (destination =='hardware') {
                     return '<span  data-tooltip="true" title="{{ trans('admin/hardware/general.undeployable_tooltip') }}"><a class="btn btn-sm bg-maroon disabled">{{ trans('general.checkout') }}</a></span>';
                 } else if(destination =='tickets') {
-                    return '<span  data-tooltip="true" title="{{ trans('admin/hardware/general.undeployable_tooltip') }}"><a class="btn btn-sm bg-maroon disabled">{{ trans('general.checkout') }}</a></span>';
+                    let note = 'Возврат на склад';
+                    return '<a href="{{ config('app.url') }}/components/' + row.component.checkin_id + '/checkin?asset_id='+ row.asset_name.id +'&user_id='+ row.requester_name.id +'&ticket_id='+ row.id +'&note='+ note +'" class="btn btn-sm bg-maroon" data-tooltip="true">Вернуть</a>';
                 } else {
                     return '<span  data-tooltip="true" title="{{ trans('general.undeployable_tooltip') }}"><a class="btn btn-sm bg-maroon disabled">{{ trans('general.checkout') }}</a></span>';
                 }
