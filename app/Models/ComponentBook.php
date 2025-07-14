@@ -23,6 +23,7 @@ class ComponentBook extends SnipeModel
     protected $fillable = [
         'name',
         'partnum',
+        'category_id'
     ];
 
     public $rules = [
@@ -37,4 +38,19 @@ class ComponentBook extends SnipeModel
      * @var array
      */
     protected $searchableAttributes = ['name',  'partnum'];
+
+    public static function rules()
+    {
+        return [
+            // Определите правила валидации
+            // Пример:
+          //  'category_id' => 'required|exists:categories,id',
+            // другие поля...
+        ];
+    }
+    // Добавьте отношение к категории
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
 }

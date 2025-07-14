@@ -60,6 +60,7 @@
                                   {!! $errors->first('name', '<span class="alert-msg" aria-hidden="true"><i class="fas fa-times" aria-hidden="true"></i>Это поле не может быть пустым </span>') !!}
                               </div>
                           </div>
+                          @include ('partials.forms.edit.category-select', ['translated_name' => trans('general.category'), 'fieldname' => 'category_id','category_type' => 'component'])
                           <div class="form-group">
                               <label for="name" class="col-md-3 control-label"> Партийный номер</label>
                               <div class="col-md-8 col-sm-12">
