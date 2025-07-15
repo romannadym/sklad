@@ -48,6 +48,11 @@ class TicketsTransformer
                 'name' => e($component->name) . ' (P/n ' . e($component->partnum) . ')',
                 'checkin_id' => $component->assets()->where('asset_id', $ticket->asset_id)->first()->pivot->id ?? null
             ] : null,
+            'serial' => ($component->serial) ? e($component->serial) : null,
+            'location' => ($component->location && $component->assets->isEmpty()) ? [
+                      'id' => (int) $component->location->id,
+                      'name' => e($component->location->name),
+                  ] : null,
             'statuslabels' => ($statusLabel->id) ? [
               'id' => (int) $statusLabel->id,
               'name' => e($statusLabel->name),

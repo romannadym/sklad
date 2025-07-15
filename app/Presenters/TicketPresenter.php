@@ -46,6 +46,20 @@ class TicketPresenter extends Presenter
                 'formatter' => 'componentsLinkObjFormatter'
             ],
             [
+                'field' => 'serial',
+                'searchable' => true,
+                'sortable' => true,
+                'title' => trans('admin/hardware/form.serial'),
+                'formatter' => 'componentsLinkFormatter',
+            ],
+            [
+                'field' => 'location',
+                'searchable' => true,
+                'sortable' => true,
+                'title' => trans('general.location'),
+                'formatter' => 'locationsLinkObjFormatter',
+            ],
+            [
                 'field' => 'requester_email',
                 'searchable' => true,
                 'sortable' => true,
