@@ -81,11 +81,37 @@ class TicketsController extends Controller
       $asset = Asset::with('company')->with('model.category')->where('asset_tag', $request->get('asset_name'))->first();
 
       if(!$asset){
-        $category = Category::where('category_type', 'asset')->first();
-        $model = AssetModel::where('name', $request->get('asset_model'))->first();
-        $company = Company::where('name', $request->get('company_name'))->first();
-        $brand = Manufacturer::where('name', $request->get('asset_brand'))->first();
-
+        //проверяем и создаем каетгорию если ее нет
+        $category = Category::firstOrCreate(
+            [
+                'category_type' => 'asset',
+                'name' => $request->get('asset_type'),
+            ],
+            [
+                'category_type' => 'asset',
+                'name' => $request->get('asset_type'),
+            ]
+        );
+        $brand = Manufacturer::firstOrCreate(
+              ['name' => $request->get('asset_brand')],
+              [
+                  'name' => $request->get('asset_brand'),
+              ]
+          );
+        $model = AssetModel::firstOrCreate(
+              ['name' => $request->get('asset_model')],
+              [
+                  'name' => $request->get('asset_model'),
+                  'category_id' => $category->id,
+                  'manufacturer_id' => $brand->id,
+              ]
+          );
+        $company = Company::firstOrCreate(
+              ['name' => $request->get('company_name')],
+              [
+                  'name' => $request->get('company_name'),
+              ]
+          );
         $asset = new Asset();
         $asset->asset_tag = $request->get('asset_brand').' '.$request->get('asset_model').' (S/n: '.$request->get('asset_serial').')';
         //$asset->name = 'HP EliteBook 850';
