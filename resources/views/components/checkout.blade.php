@@ -79,7 +79,7 @@
                 {{ trans('general.qty') }}
               </label>
               <div class="col-md-2 col-sm-5 col-xs-5">
-                <input class="form-control required col-md-12" {{ isset($ticketId) ? 'readonly' : '' }}  type="number" name="assigned_qty"  min="1" max="10" id="assigned_qty" value="{{ old('assigned_qty') ?? 1 }}" oninput="this.value = Math.min({{$component->remaining}}, Math.max(0, this.value))" />
+                <input class="form-control required col-md-12" {{ isset($ticketId) ? '' : '' }}  type="number" name="assigned_qty"  min="1" max="10" id="assigned_qty" value="{{ old('assigned_qty') ?? 1 }}" oninput="this.value = Math.min({{$component->remaining}}, Math.max(0, this.value))" />
               </div>
               @if ($errors->first('assigned_qty'))
                 <div class="col-md-9 col-md-offset-3">
@@ -92,7 +92,7 @@
                 {{ trans('Серийный номер') }}
             </label>
               <div class="col-md-2 col-sm-5 col-xs-5">
-                <input class="form-control required col-md-12" required  {{ isset($ticketId) ? 'readonly' : '' }} type="text"  name="serial[1]" id="serial_1" value="{{ empty($component->serial) ? old('serial.1',$component->serial[1] ?? '') : $component->serial }}"
+                <input class="form-control required col-md-12" required  {{ isset($ticketId) ? '' : '' }} type="text"  name="serial[1]" id="serial_1" value="{{ empty($component->serial) ? old('serial.1',$component->serial[1] ?? '') : $component->serial }}"
                 />
               </div>
               @if (isset(session('duplicate_serials')[1]))
