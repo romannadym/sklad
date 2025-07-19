@@ -39,7 +39,8 @@
                         <div class="form-group {{ $errors->has('checkin_qty') ? 'error' : '' }}">
                             <label for="checkin_qty" class="col-md-2 control-label">{{ trans('general.qty') }}</label>
                             <div class="col-md-3">
-                                <input type="text" class="form-control" name="checkin_qty" aria-label="checkin_qty" value="{{ old('assigned_qty', $component_assets->assigned_qty) }}">
+                                <input type="text" class="form-control" name="checkin_qty_view" aria-label="checkin_qty" disabled="true" value="{{ old('assigned_qty', $component_assets->assigned_qty) }}">
+                                <input type="hidden" class="form-control" name="checkin_qty" aria-label="checkin_qty"  value="{{ old('assigned_qty', $component_assets->assigned_qty) }}">
                             </div>
                             <div class="col-md-9 col-md-offset-2">
                             <p class="help-block">{{ trans('admin/components/general.checkin_limit', ['assigned_qty' => $component_assets->assigned_qty]) }}</p>
@@ -47,7 +48,32 @@
                             :message</span>') !!}
                             </div>
                         </div>
+                        <div class="form-group">
+                            <div class="col-md-8 col-md-offset-2">
+                                <label class="form-control">
+                                    <input type="checkbox" value="1" name="cancel"  aria-label="byod">
+                                    Отмена
+                                </label>
+                            </div>
+                        </div>
 
+                        <div class="form-group">
+                          <label for="checkin_qty" class="col-md-2 control-label">{{ trans('general.location') }}</label>
+                          <div class="col-md-3">
+                            <select class="js-data-ajax" data-endpoint="locations" data-placeholder="{{ trans('general.select_location') }}" name="location_id" style="width: 100%" id="location_id_location_select" aria-label="location_id"{!! ((isset($item)) && (Helper::checkIfRequired($item, 'location_id'))) ? ' required ' : '' !!}>
+                              @php
+                                  // Определяем location_id с учетом старого ввода, item и component
+                                  $location_id = old('location_id', isset($item) ? $item->location_id : (isset($component) ? $component->location_id : ''))
+                              @endphp
+
+                              @if ($location_id)
+                                  <option value="{{ $location_id }}" selected="selected" role="option" aria-selected="true">
+                                      {{ (\App\Models\Location::find($location_id)) ? \App\Models\Location::find($location_id)->name : '' }}
+                                  </option>
+                              @endif
+                          </select>
+                          </div>
+                        </div>
                         <!-- Note -->
                         <div class="form-group {{ $errors->has('note') ? 'error' : '' }}">
                             <label for="note" class="col-md-2 control-label">{{ trans('admin/hardware/form.notes') }}</label>

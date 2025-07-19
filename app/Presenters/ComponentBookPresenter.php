@@ -28,16 +28,23 @@ class ComponentBookPresenter extends Presenter
                 'sortable' => true,
                 'title' => trans('general.name'),
                 'visible' => true,
-            ], 
+            ],
+            [
+                'field' => 'category',
+                'searchable' => true,
+                'sortable' => true,
+                'title' => trans('general.category'),
+                'formatter' => 'categoriesLinkObjFormatter',
+            ],
             [
                 'field' => 'partnum',
                 'searchable' => true,
                 'sortable' => true,
                 'title' => 'Партийный номер',
-	        'visible' => true, 
-	        ], 
+	        'visible' => true,
+	        ],
         ];
-     
+
         $layout[] = [
             'field' => 'actions',
             'searchable' => false,
@@ -50,5 +57,5 @@ class ComponentBookPresenter extends Presenter
         return json_encode($layout);
     }
 
-    
+
 }

@@ -36,9 +36,9 @@ return [
     | to accept any value.
     |
     */
-   
+
     'supports_credentials' => false,
-    'allowed_origins' => $allowed_origins,
+    'allowed_origins' =>['*'],
     'allowed_origins_patterns' => [],
     'allowed_headers' => ['*'],
     'allowed_methods' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],

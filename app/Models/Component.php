@@ -32,7 +32,7 @@ class Component extends SnipeModel
     public $rules = [
         'name'           => 'required|min:3|max:191',
         'qty'            => 'required|integer|min:1',
-        //'category_id'    => 'required|integer|exists:categories,id',
+        'category_id'    => 'required|integer|exists:categories,id',
         'supplier_id'    => 'nullable|integer|exists:suppliers,id',
         'company_id'     => 'integer|nullable|exists:companies,id',
         'min_amt'        => 'integer|min:0|nullable',
@@ -138,7 +138,7 @@ class Component extends SnipeModel
     }
     public function users()
     {
-        return $this->belongsToMany(\App\Models\User::class, 'components_assets')
+        return $this->belongsToMany(\App\Models\User::class, 'components_assets', 'component_id', 'assigned_to_user_id')
                     ->withPivot('id', 'assigned_qty', 'note', 'ticketnum', 'created_at', 'created_by','assigned_to_user_id') // Указываем дополнительные поля
                     ->withTimestamps(); // Загружаем временные метки
     }

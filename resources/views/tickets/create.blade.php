@@ -2,7 +2,7 @@
 
 {{-- Page title --}}
 @section('title')
- Содать компонент
+ Содать заявку на компонент
 @parent
 @stop
 
@@ -22,7 +22,7 @@
     <!-- col-md-8 -->
     <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 col-sm-12 col-sm-offset-0">
 
-        <form id="create-form" class="form-horizontal" method="post" action="{{ route('componentbooks.store') }}" autocomplete="on" role="form" enctype="multipart/form-data">
+        <form id="create-form" class="form-horizontal" method="post" action="{{ route('tickets.store') }}" autocomplete="on" role="form" enctype="multipart/form-data">
 
           <!-- box -->
           <div class="box box-default">
@@ -54,17 +54,16 @@
                <!-- box-body -->
                <div class="box-body">
                           <div class="form-group">
-                              <label for="name" class="col-md-3 control-label"> Название компонента</label>
+                              <label for="name" class="col-md-3 control-label"> Название актива</label>
                               <div class="col-md-8 col-sm-12">
-                                  <input class="form-control" style="width:100%;" type="text" name="name" aria-label="name" id="name" value="" required/>
-                                  {!! $errors->first('name', '<span class="alert-msg" aria-hidden="true"><i class="fas fa-times" aria-hidden="true"></i>Это поле не может быть пустым </span>') !!}
+                                  <input class="form-control" style="width:100%;" type="text" name="name" aria-label="asset_name" id="asset_name" value="" required/>
+                                  {!! $errors->first('asset_name', '<span class="alert-msg" aria-hidden="true"><i class="fas fa-times" aria-hidden="true"></i>Это поле не может быть пустым </span>') !!}
                               </div>
                           </div>
-                          @include ('partials.forms.edit.category-select', ['translated_name' => trans('general.category'), 'fieldname' => 'category_id','category_type' => 'component'])
                           <div class="form-group">
-                              <label for="name" class="col-md-3 control-label"> Партийный номер</label>
+                              <label for="name" class="col-md-3 control-label"> Серийный номер актива</label>
                               <div class="col-md-8 col-sm-12">
-                                  <input class="form-control" style="width:100%;" type="text" name="partnum" aria-label="partnum" id="partnum" value="{{ old('partnum.1', $item->partnum) }}" required/>
+                                  <input class="form-control" style="width:100%;" type="text" name="asset_serial" aria-label="asset_serial" id="asset_serial" value="{{ old('asset_serial.1', $item->asset_serial) }}" required/>
                                   {!! $errors->first('partnum', '<span class="alert-msg" aria-hidden="true"><i class="fas fa-times" aria-hidden="true"></i>Это поле не может быть пустым </span>') !!}
                                   {!! $errors->first('partnums', '<span class="alert-msg"><i class="fas fa-times"></i>  Партийный номер должен быть уникальным.</span>') !!}
                                   @if($errors->has('duplicate'))
@@ -75,6 +74,8 @@
 
 
                         </div>
+                        @include ('partials.forms.edit.asset-select', ['translated_name' => trans('general.asset'), 'fieldname' => 'asset_id', 'required' => true])
+                        @include ('partials.forms.edit.component-select', ['translated_name' => trans('general.component'), 'fieldname' => 'component_id', 'required' => true])
                         <div style="padding-top: 30px;">
                             @if ($item->id)
                             {{ method_field('PUT') }}
@@ -97,4 +98,24 @@
 
       </div><!-- col-md-8 -->
 </div><!-- ./row -->
+<script src="{{ url(asset('js/jquery.js')) }}" nonce="{{ csrf_token() }}"></script>
+<script type="text/javascript">
+ $(document).ready(function () {
+    $('#assigned_asset_select').on('change', function(){
+      const selectedText = $(this).find('option:selected').text();
+      const match = selectedText.match(/(?:[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,})?(.*)\(S\/n:\s*([^)]+)\)/i);
+      if (match) {
+          const deviceName = match[1]; // "Dell EMC VMAX250"
+          const serialNumber = match[2]; // "2978018372"
+          console.log("Device:", deviceName);
+          console.log("Serial:", serialNumber);
+          $('#asset_name').val(deviceName);
+          $('#asset_serial').val(serialNumber);
+        } else {
+          console.log("Не удалось распарсить строку.");
+      }
+
+    })
+  })
+</script>
 @stop

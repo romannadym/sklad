@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Components;
 use App\Events\CheckoutableCheckedOut;
 use App\Events\ComponentCheckedOut;
 use App\Helpers\Helper;
+use App\Models\Ticket;
 use App\Http\Controllers\Controller;
 use App\Models\Asset;
 use App\Models\Component;
@@ -29,7 +30,10 @@ class ComponentCheckoutController extends Controller
      */
     public function create($id)
     {
-
+        $assetId = request()->input('asset_id'); // или request('asset_id')
+        $userId = request()->input('user_id');
+        $ticketId = request()->input('ticket_id');
+        $note = request()->input('note');
         if ($component = Component::find($id)) {
 
             $this->authorize('checkout', $component);
@@ -44,7 +48,9 @@ class ComponentCheckoutController extends Controller
                 }
 
                 // Return the checkout view
-                return view('components/checkout', compact('component'));
+                $component->remaining = (int)$component->numRemaining();
+
+                return view('components/checkout', compact('component','assetId','userId','ticketId','note'));
             }
 
             // Invalid category
@@ -77,12 +83,29 @@ class ComponentCheckoutController extends Controller
         }
 
         $this->authorize('checkout', $component);
+        //Проверка на дубли по серийным номерам
+        foreach ($request->get('serial') as $key => $serial) {
+            $duplicate = Component::where('serial', '=', $serial)->first();
+            if(isset($duplicate->id) && $duplicate->id == $componentId){
+                continue;
+            }
+            if($duplicate){
+                $duplicate_serials[$key] = $serial;
+            }
+        }
+        if(isset($duplicate_serials)){
+            return redirect()->route('components.checkout.show', $componentId)
+                ->with('error', trans('admin/components/message.checkout.duplicate_error'))
+                ->withInput()
+                ->with('duplicate_serials', $duplicate_serials);
+        }
 
         $max_to_checkout = $component->numRemaining();
 
         // Make sure there are at least the requested number of components available to checkout
         if ($max_to_checkout < $request->get('assigned_qty')) {
-            return redirect()->back()->withInput()->with('error', trans('admin/components/message.checkout.unavailable', ['remaining' => $max_to_checkout, 'requested' => $request->get('assigned_qty')]));
+            return redirect()->back()->withInput()
+            ->with('error', trans('admin/components/message.checkout.unavailable', ['remaining' => $max_to_checkout, 'requested' => $request->get('assigned_qty')]));
         }
 
         $validator = Validator::make($request->all(), [
@@ -100,30 +123,185 @@ class ComponentCheckoutController extends Controller
         $asset = Asset::find($request->input('asset_id'));
 
         if ((Setting::getSettings()->full_multiple_companies_support) && $component->company_id !== $asset->company_id) {
-            return redirect()->route('components.checkout.show', $componentId)->with('error', trans('general.error_user_company'));
+            return redirect()->route('components.checkout.show', $componentId)
+            ->with('error', trans('general.error_user_company'));
         }
 
-        // Update the component data
-        $component->asset_id = $request->input('asset_id');
-        $component->assets()->attach($component->id, [
-            'component_id' => $component->id,
-            'created_by' => auth()->user()->id,
-            'created_at' => date('Y-m-d H:i:s'),
-            'assigned_qty' => $request->input('assigned_qty'),
-            'asset_id' => $request->input('asset_id'),
-            'note' => $request->input('note'),
-            'ticketnum' => $request->input('ticketnum'),
-            'assigned_to_user_id' => $request->input('assigned_to_user_id'),
-        ]);
-        ComponentCheckout::create([ 
-            'component_id' => $component->id,
-            'assigned_qty' => $request->input('assigned_qty'),
-            'asset_id' => $request->input('asset_id'),
-            'note' => $request->input('note'),
-            'ticketnum' => $request->input('ticketnum'),
-            'assigned_to_user_id' => $request->input('assigned_to_user_id'),
-        ]);
-        event(new CheckoutableCheckedOut($component, $asset, auth()->user(), $request->input('note')));
+
+        if($request->get('assigned_qty') == $component->qty && $component->qty == 1)
+        {
+            foreach($request->get('serial') as $key => $serial){
+                $component->serial = $serial;
+                $component->save();
+            }
+
+            // Update the component data
+
+            $component->asset_id = $request->input('asset_id');
+            $component->assets()->attach($component->id, [
+                'component_id' => $component->id,
+                'created_by' => auth()->user()->id,
+                'created_at' => date('Y-m-d H:i:s'),
+                'assigned_qty' => 1,
+                'asset_id' => $request->input('asset_id'),
+                'note' => $request->input('note'),
+                'ticketnum' => $request->input('ticketnum'),
+                'assigned_to_user_id' => $request->input('assigned_to_user_id'),
+            ]);
+            ComponentCheckout::create([
+                'component_id' => $component->id,
+                'assigned_qty' => 1,
+                'asset_id' => $request->input('asset_id'),
+                'note' => $request->input('note'),
+                'ticketnum' => $request->input('ticketnum'),
+                'assigned_to_user_id' => $request->input('assigned_to_user_id'),
+            ]);
+            event(new CheckoutableCheckedOut($component, $asset, auth()->user(), $request->input('note')));
+            unset($component->asset_id);
+        }
+
+        else if ($request->get('assigned_qty') == $component->qty && $component->qty > 1)
+        {
+            $i = 1;
+            foreach($request->get('serial') as $key => $serial)
+            {
+                if($i == 1)
+                {
+                    $component->serial = $serial;
+                    $component->save();
+
+                    // Update the component data
+
+                    $component->asset_id = $request->input('asset_id');
+                    $component->assets()->attach($component->id, [
+                        'component_id' => $component->id,
+                        'created_by' => auth()->user()->id,
+                        'created_at' => date('Y-m-d H:i:s'),
+                        'assigned_qty' => 1,
+                        'asset_id' => $request->input('asset_id'),
+                        'note' => $request->input('note'),
+                        'ticketnum' => $request->input('ticketnum'),
+                        'assigned_to_user_id' => $request->input('assigned_to_user_id'),
+                    ]);
+                    ComponentCheckout::create([
+                        'component_id' => $component->id,
+                        'assigned_qty' => 1,
+                        'asset_id' => $request->input('asset_id'),
+                        'note' => $request->input('note'),
+                        'ticketnum' => $request->input('ticketnum'),
+                        'assigned_to_user_id' => $request->input('assigned_to_user_id'),
+                    ]);
+                    event(new CheckoutableCheckedOut($component, $asset, auth()->user(), $request->input('note')));
+                    unset($component->asset_id);
+                }
+                else
+                {
+                $componentNew = new Component();
+                $componentNew->name                   = $component->name;
+                $componentNew->category_id            = $component->category_id;
+                $componentNew->supplier_id            = $component->supplier_id;
+                $componentNew->location_id            = $component->location_id;
+                $componentNew->company_id             = $component->company_id;
+                $componentNew->serial                 = $serial;
+                $componentNew->qty                    = 1;
+                $componentNew->created_by             = auth()->id();
+                $componentNew->notes                  = $component->notes;
+                $componentNew->partnum                = $component->partnum;
+                $componentNew->status                 = $component->status;
+                $componentNew->customer               = $component->customer;
+                $componentNew->save();
+                if($componentNew->id)
+                    {
+                        $component->qty = $component->qty - 1;
+                        $component->save();
+
+                        // Update the component data
+
+                        $componentNew->asset_id = $request->input('asset_id');
+                        $componentNew->assets()->attach($componentNew->id, [
+                            'component_id' => $componentNew->id,
+                            'created_by' => auth()->user()->id,
+                            'created_at' => date('Y-m-d H:i:s'),
+                            'assigned_qty' => 1,
+                            'asset_id' => $request->input('asset_id'),
+                            'note' => $request->input('note'),
+                            'ticketnum' => $request->input('ticketnum'),
+                            'assigned_to_user_id' => $request->input('assigned_to_user_id'),
+                        ]);
+                        ComponentCheckout::create([
+                            'component_id' => $componentNew->id,
+                            'assigned_qty' => 1,
+                            'asset_id' => $request->input('asset_id'),
+                            'note' => $request->input('note'),
+                            'ticketnum' => $request->input('ticketnum'),
+                            'assigned_to_user_id' => $request->input('assigned_to_user_id'),
+                        ]);
+                        event(new CheckoutableCheckedOut($componentNew, $asset, auth()->user(), $request->input('note')));
+                        unset($componentNew->asset_id);
+                    }
+                }
+
+
+                $i++;
+            }
+        }
+
+        else if($request->get('assigned_qty') != $component->qty)
+        {
+            foreach($request->get('serial') as $key => $serial){
+                $componentNew = new Component();
+                $componentNew->name                   = $component->name;
+                $componentNew->category_id            = $component->category_id;
+                $componentNew->supplier_id            = $component->supplier_id;
+                $componentNew->location_id            = $component->location_id;
+                $componentNew->company_id             = $component->company_id;
+                $componentNew->serial                 = $serial;
+                $componentNew->qty                    = 1;
+                $componentNew->created_by             = auth()->id();
+                $componentNew->notes                  = $component->notes;
+                $componentNew->partnum                = $component->partnum;
+                $componentNew->status                 = $component->status;
+                $componentNew->customer               = $component->customer;
+                $componentNew->save();
+                if($componentNew->id)
+                {
+                    $component->qty = $component->qty - 1;
+                    $component->save();
+
+                    // Update the component data
+
+                    $componentNew->asset_id = $request->input('asset_id');
+                    $componentNew->assets()->attach($componentNew->id, [
+                        'component_id' => $componentNew->id,
+                        'created_by' => auth()->user()->id,
+                        'created_at' => date('Y-m-d H:i:s'),
+                        'assigned_qty' => 1,
+                        'asset_id' => $request->input('asset_id'),
+                        'note' => $request->input('note'),
+                        'ticketnum' => $request->input('ticketnum'),
+                        'assigned_to_user_id' => $request->input('assigned_to_user_id'),
+                    ]);
+                    ComponentCheckout::create([
+                        'component_id' => $componentNew->id,
+                        'assigned_qty' => 1,
+                        'asset_id' => $request->input('asset_id'),
+                        'note' => $request->input('note'),
+                        'ticketnum' => $request->input('ticketnum'),
+                        'assigned_to_user_id' => $request->input('assigned_to_user_id'),
+                    ]);
+                    event(new CheckoutableCheckedOut($componentNew, $asset, auth()->user(), $request->input('note')));
+                    unset($componentNew->asset_id);
+                }
+            }
+        }
+        $ticket_id = $request->input('ticket_id');
+        $ticket = Ticket::where('id', $ticket_id)->first();
+        if($ticket)
+        {
+          $ticket->status_id = 10;
+          $ticket->save();
+        }
+
 
         $request->request->add(['checkout_to_type' => 'asset']);
         $request->request->add(['assigned_asset' => $asset->id]);

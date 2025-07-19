@@ -9,11 +9,11 @@
 <!-- load english again here, even though it's in the all.js file, because if BS table doesn't have the translation, it otherwise defaults to chinese. See https://bootstrap-table.com/docs/api/table-options/#locale -->
 <script src="{{ url(mix('js/dist/bootstrap-table-en-US.min.js')) }}"></script>
 <script nonce="{{ csrf_token() }}">
-     
+
     $(function () {
-       
+
         var blockedFields = "searchable,sortable,switchable,title,visible,formatter,class".split(",");
-        
+
         var keyBlocked = function(key) {
             for(var j in blockedFields) {
                 if (key === blockedFields[j]) {
@@ -28,7 +28,7 @@
         var filters = {};
         $('.snipe-table').bootstrapTable('destroy').each(function () {
             table = $(this);
-             
+
             $(document).ready(function() {
                        // Получаем сохранённые фильтры из cookies
             savedFilters = table.bootstrapTable('getCookies').filterBy || {};
@@ -38,7 +38,7 @@
             // Устанавливаем значения в селекты
                 $('select[data-filter]').each(function () {
                     var filterName = $(this).data('filter');
-                    
+
                     if (savedFilters[filterName]) {
                         $(this).val(savedFilters[filterName]).change(); // Устанавливаем значение
                     }
@@ -46,13 +46,13 @@
 
                 $('input[data-filter]').each(function () {
                     var filterName = $(this).data('filter');
-                    
+
                     if (savedFilters[filterName]) {
                         $(this).val(savedFilters[filterName]).change(); // Устанавливаем значение
                     }
                 });
             });
-            
+
             data_export_options = $(this).attr('data-export-options');
             export_options = data_export_options ? JSON.parse(data_export_options) : {};
             export_options['htmlContent'] = false; // this is already the default; but let's be explicit about it
@@ -104,7 +104,7 @@
                 }
                 newParams['filter'] = JSON.parse(table.bootstrapTable('getCookies').filterBy);
                 console.log(newParams);
-                
+
                 return newParams;
             },
             formatLoadingMessage: function () {
@@ -128,7 +128,7 @@
                 $('select[data-filter]').on('change', function () {
                     var filterName = $(this).data('filter'); // Имя фильтра
                     var selectedValue = $(this).val(); // Выбранное значение
-                   
+
                     // Получаем текущие фильтры из таблицы
                     var currentFilters = JSON.parse(table.bootstrapTable('getCookies').filterBy) || {};
                     // Обновляем или добавляем новый фильтр
@@ -145,10 +145,10 @@
                     clearTimeout(timeout); // Сбрасываем предыдущий таймер
 
                     timeout = setTimeout(function() {
-                        
+
                         // Получаем текущие фильтры из таблицы
                         var currentFilters = JSON.parse(table.bootstrapTable('getCookies').filterBy) || {};
-                        
+
                         // Обновляем или добавляем новый фильтр
                         currentFilters[filterName] = value;
                         // Применяем обновлённый набор фильтров
@@ -268,7 +268,7 @@
     });
 
 
-    
+
 
     // This only works for model index pages because it uses the row's model ID
     function genericRowLinkFormatter(destination) {
@@ -279,7 +279,7 @@
         };
     }
 
-    
+
 
     // Use this when we're introspecting into a column object and need to link
     function genericColumnObjLinkFormatter(destination) {
@@ -333,6 +333,16 @@
         };
     }
 
+    function genericStatusObjLinkFormatter(destination) {
+        return function (value,row) {
+            if (value) {
+
+                icon_style = 'fa-circle';
+                return '<nobr><a href="{{ config('app.url') }}/' + destination + '/' + value.id + '" data-tooltip="true"> <i class="fa ' + icon_style + '" style="color:'+ value.color +'"></i> ' + value.name + ' </a> </nobr>';
+            }
+        };
+    }
+
     function hardwareAuditFormatter(value, row) {
         return '<a href="{{ config('app.url') }}/hardware/audit/' + row.id + '/" class="btn btn-sm bg-yellow" data-tooltip="true" title="Audit this item">{{ trans('general.audit') }}</a>';
     }
@@ -382,7 +392,7 @@
                 if (row.name=='') {
                     var name_for_box = row.asset_tag
                 }
-                
+
                 actions += '<a href="{{ config('app.url') }}/' + dest + '/' + row.id + '" '
                     + ' class="actions btn btn-danger btn-sm delete-asset" data-tooltip="true"  '
                     + ' data-toggle="modal" '
@@ -494,7 +504,7 @@
 
     // We need a special formatter for license seats, since they don't work exactly the same
     // Checkouts need the license ID, checkins need the specific seat ID
-    
+
     function licenseSeatInOutFormatter(value, row) {
         // The user is allowed to check the license seat out and it's available
         if ((row.available_actions.checkout === true) && (row.user_can_checkout === true) && ((!row.asset_id) && (!row.assigned_to))) {
@@ -509,9 +519,15 @@
         return function (value,row) {
 
             // The user is allowed to check items out, AND the item is deployable
+            console.log(row)
             if ((row.available_actions.checkout == true) && (row.user_can_checkout == true) && ((!row.asset_id) && (!row.assigned_to))) {
-
+                if(destination =='tickets') {
+                    let note = 'Выдано инженеру';
+                    return '<a href="{{ config('app.url') }}/components/' + row.component.id + '/checkout?asset_id='+ row.asset_name.id +'&user_id='+ row.requester_name.id +'&ticket_id='+ row.id +'&note='+ note +'" class="btn btn-sm bg-maroon" data-tooltip="true" title="{{ trans('general.checkout_tooltip') }}">Выдать</a>';
+                } else {
                     return '<a href="{{ config('app.url') }}/' + destination + '/' + row.id + '/checkout" class="btn btn-sm bg-maroon" data-tooltip="true" title="{{ trans('general.checkout_tooltip') }}">{{ trans('general.checkout') }}</a>';
+                }
+
 
             // The user is allowed to check items out, but the item is not able to be checked out
             } else if (((row.user_can_checkout == false)) && (row.available_actions.checkout == true) && (!row.assigned_to)) {
@@ -520,6 +536,9 @@
                 // item that has a status label
                 if (destination =='hardware') {
                     return '<span  data-tooltip="true" title="{{ trans('admin/hardware/general.undeployable_tooltip') }}"><a class="btn btn-sm bg-maroon disabled">{{ trans('general.checkout') }}</a></span>';
+                } else if(destination =='tickets') {
+                    let note = 'Возврат на склад';
+                    return '<a href="{{ config('app.url') }}/components/' + row.component.checkin_id + '/checkin?asset_id='+ row.asset_name.id +'&user_id='+ row.requester_name.id +'&ticket_id='+ row.id +'&note='+ note +'" class="btn btn-sm bg-maroon" data-tooltip="true">Вернуть</a>';
                 } else {
                     return '<span  data-tooltip="true" title="{{ trans('general.undeployable_tooltip') }}"><a class="btn btn-sm bg-maroon disabled">{{ trans('general.checkout') }}</a></span>';
                 }
@@ -560,6 +579,7 @@
         'consumables',
         'components',
         'componentbooks',
+        'tickets',
         'locations',
         'users',
         'manufacturers',
@@ -582,6 +602,7 @@
         window[formatters[i] + 'LinkObjFormatter'] = genericColumnObjLinkFormatter(formatters[i]);
         window[formatters[i] + 'ActionsFormatter'] = genericActionsFormatter(formatters[i]);
         window[formatters[i] + 'InOutFormatter'] = genericCheckinCheckoutFormatter(formatters[i]);
+        window[formatters[i] + 'LinkStatusObjFormatter'] = genericStatusObjLinkFormatter(formatters[i]);
     }
 
     var child_formatters = [
@@ -837,7 +858,7 @@
    function imageFormatter(value, row) {
 
         if (value) {
-          
+
             // This is a clunky override to handle unusual API responses where we're presenting a link instead of an array
             if (row.avatar) {
                 var altName = '';
@@ -944,10 +965,10 @@
         if (Array.isArray(data)) {
             var field = this.field;
             var total_sum = data.reduce(function(sum, row) {
-                
+
                 return (sum) + (cleanFloat(row[field]) || 0);
             }, 0);
-            
+
             return numberWithCommas(total_sum.toFixed(2));
         }
         return 'not an array';
@@ -955,7 +976,7 @@
 
     function sumFormatterQuantity(data){
         if(Array.isArray(data)) {
-            
+
             // Prevents issues on page load where data is an empty array
             if(data[0] == undefined){
                 return 0.00
@@ -979,7 +1000,7 @@
     }
 
     function numberWithCommas(value) {
-        
+
         if ((value) && ("{{$snipeSettings->digit_separator}}" == "1.234,56")){
             var parts = value.toString().split(".");
              parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -1035,7 +1056,7 @@
 
 
         });
-       
+
     });
 
 </script>

@@ -10,6 +10,7 @@ use App\Http\Controllers\DepreciationsController;
 use App\Http\Controllers\GroupsController;
 use App\Http\Controllers\HealthController;
 use App\Http\Controllers\ImportsController;
+use App\Http\Controllers\TicketController;
 use App\Http\Controllers\LabelsController;
 use App\Http\Controllers\LocationsController;
 use App\Http\Controllers\ManufacturersController;
@@ -27,6 +28,11 @@ use App\Livewire\Importer;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
+Route::resource('tickets', TicketController::class, [
+    'middleware' => ['auth'],
+    'parameters' => ['ticket' => 'ticket_id'],
+]);
+
 Route::group(['middleware' => 'auth'], function () {
     /*
     * Companies
@@ -41,7 +47,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('categories', CategoriesController::class, [
         'parameters' => ['category' => 'category_id'],
     ]);
-  
+
     /*
     * Labels
     */
@@ -230,15 +236,15 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'authorize:superuser
         Route::delete('delete/{filename}',
             [SettingsController::class, 'deleteFile'])->name('settings.backups.destroy');
 
-        Route::post('/', 
+        Route::post('/',
             [SettingsController::class, 'postBackups']
         )->name('settings.backups.create');
 
-        Route::post('/restore/{filename}', 
+        Route::post('/restore/{filename}',
             [SettingsController::class, 'postRestore']
         )->name('settings.backups.restore');
 
-        Route::post('/upload', 
+        Route::post('/upload',
             [SettingsController::class, 'postUploadBackup']
         )->name('settings.backups.upload');
 
@@ -343,7 +349,7 @@ Route::group(['prefix' => 'account', 'middleware' => ['auth']], function () {
 });
 
 Route::group(['middleware' => ['auth']], function () {
-    Route::get('reports/audit', 
+    Route::get('reports/audit',
         [ReportsController::class, 'audit']
     )->name('reports.audit');
 
@@ -384,7 +390,7 @@ Route::group(['middleware' => ['auth']], function () {
         'reports/activity',
         [ReportsController::class, 'getActivityReport']
     )->name('reports.activity');
-    
+
     Route::get(
         'reports/checkout',
         [ReportsController::class, 'getCheckoutReport']
@@ -549,7 +555,7 @@ Route::group(['middleware' => 'web'], function () {
 //Auth::routes();
 
 Route::get(
-    '/health', 
+    '/health',
     [HealthController::class, 'get']
 )->name('health');
 

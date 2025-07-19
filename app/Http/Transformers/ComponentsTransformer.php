@@ -122,6 +122,7 @@ class ComponentsTransformer
                 'available_actions' => ['checkin' => true],
                 'component_name' => "<a href='/components/{$component->id}'>". e($component->name)."</a>",
                 'component_name2' => e($component->name),
+                'serial' => e($component->serial),
             ];
         }
 

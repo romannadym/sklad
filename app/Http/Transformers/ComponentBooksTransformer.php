@@ -22,20 +22,22 @@ class ComponentBooksTransformer
 
     public function transformComponentBook(ComponentBook $component)
     {
-    
+
         $array = [
             'id' => (int) $component->id,
             'name' => e($component->name),
-          
-	    'partnum' => ($component->partnum) ? e($component->partnum) : null,
-	   
+	          'partnum' => ($component->partnum) ? e($component->partnum) : null,
+            'category' => ($component->category) ? [
+                'id' => (int) $component->category->id,
+                'name' => e($component->category->name),
+            ] : null,
             'created_by' => ($component->adminuser) ? [
                 'id' => (int) $component->adminuser->id,
                 'name'=> e($component->adminuser->present()->fullName()),
             ] : null,
             'created_at' => Helper::getFormattedDateObject($component->created_at, 'datetime'),
             'updated_at' => Helper::getFormattedDateObject($component->updated_at, 'datetime'),
-          'actions' => ['sadasdasd'], 
+          'actions' => ['sadasdasd'],
         ];
 
         $permissions_array['available_actions'] = [
@@ -47,5 +49,5 @@ class ComponentBooksTransformer
         return $array;
     }
 
-    
+
 }

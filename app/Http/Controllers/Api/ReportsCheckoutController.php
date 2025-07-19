@@ -37,6 +37,7 @@ class ReportsCheckoutController extends Controller
             ->orWhere('components.name', 'like', $search_str)
             ->orWhereRaw("CONCAT(users.first_name, ' ', users.last_name) LIKE ?", [$search_str])
             ->orWhere('ticketnum', 'like', $search_str)
+            ->orWhere('components.serial', 'like', $search_str)
             ->orWhere('note', 'like', $search_str);
             })
             ->where(function ($query) use ($request) {
