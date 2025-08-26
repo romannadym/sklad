@@ -107,7 +107,7 @@ class ComponentCheckinController extends Controller
 
             session()->put(['redirect_option' => $request->get('redirect_option')]);
 
-            $ticket = Ticket::where('component_id', $component->id)->first();
+            $ticket = Ticket::where('component_id', $component->id)->where('id', $request->input('ticket_id'))->first();
             if($request->input('cancel') == 1 )
             {
               if($ticket)

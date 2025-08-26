@@ -83,6 +83,7 @@
                             </div>
                         </div>
                         @if(isset($ticketId) && $ticketId)
+                          <input type="hidden" name="ticket_id" value="{{ $ticketId }}"
                           <x-redirect_submit_options
                                   index_route="components.index"
                                   :button_label="trans('general.checkout')"
