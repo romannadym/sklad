@@ -68,7 +68,7 @@ class TicketsTransformer
         ];
 
         $permissions_array['available_actions'] = [
-            'checkout' => Gate::allows('checkout', $component),
+            $ticket->status_id == 13 ? '' : 'checkout' => Gate::allows('checkout', $component),
             'checkin' => Gate::allows('checkin', $component),
         //    'update' => Gate::allows('update', Ticket::class),
             'delete' => Gate::allows('delete', Ticket::class),
