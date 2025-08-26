@@ -1508,6 +1508,11 @@ class Helper
             }
         }
 
+        //return to tickets.index
+        if($redirect_option == 'tickets.index')
+        {
+            return route('tickets.index');
+        }
         // return to thing being assigned
         if ($redirect_option == 'item') {
             switch ($table) {

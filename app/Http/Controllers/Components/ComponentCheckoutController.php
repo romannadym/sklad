@@ -75,7 +75,7 @@ class ComponentCheckoutController extends Controller
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function store(Request $request, $componentId)
-    {
+    { 
         // Check if the component exists
         if (!$component = Component::find($componentId)) {
             // Redirect to the component management page with error

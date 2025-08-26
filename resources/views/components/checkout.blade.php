@@ -126,16 +126,29 @@
 
 
         </div> <!-- .BOX-BODY-->
-          <x-redirect_submit_options
-                  index_route="components.index"
-                  :button_label="trans('general.checkout')"
-                  :options="[
-                                'index' => trans('admin/hardware/form.redirect_to_all', ['type' => trans('general.components')]),
-                                'item' => trans('admin/hardware/form.redirect_to_type', ['type' => trans('general.component')]),
-                                'target' => trans('admin/hardware/form.redirect_to_checked_out_to'),
+          @if(isset($ticketId) && $ticketId)
+            <x-redirect_submit_options
+                    index_route="components.index"
+                    :button_label="trans('general.checkout')"
 
-                               ]"
-          />
+                    :options="[
+                                  'tickets.index' => 'Вернуться к заявкам',
+                                  'item' => trans('admin/hardware/form.redirect_to_type', ['type' => trans('general.component')]),
+                                  'target' => trans('admin/hardware/form.redirect_to_checked_out_to'),
+                                 ]"
+            />
+          @else
+            <x-redirect_submit_options
+                    index_route="components.index"
+                    :button_label="trans('general.checkout')"
+
+                    :options="[
+                                  'index' => trans('admin/hardware/form.redirect_to_all', ['type' => trans('general.components')]),
+                                  'item' => trans('admin/hardware/form.redirect_to_type', ['type' => trans('general.component')]),
+                                  'target' => trans('admin/hardware/form.redirect_to_checked_out_to'),
+                                 ]"
+            />
+          @endif
       </div> <!-- .box-default-->
     </form>
   </div> <!-- .col-md-9-->
