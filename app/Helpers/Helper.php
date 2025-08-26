@@ -497,17 +497,17 @@ class Helper
     public static function ParseFloat($floatString)
     {
         /*******
-         * 
+         *
          * WARNING: This does conversions based on *locale* - a Unix-ey-like thing.
-         * 
+         *
          * Everything else in the system tends to convert based on the Snipe-IT settings
-         * 
+         *
          * So it's very likely this is *not* what you want - instead look for the new
-         * 
+         *
          * ParseCurrency($currencyString)
-         * 
+         *
          * Which should be directly below here
-         * 
+         *
          */
         $LocaleInfo = localeconv();
         $floatString = str_replace(',', '', $floatString);
@@ -523,10 +523,10 @@ class Helper
 
         return floatval($floatString);
     }
-    
+
     /**
      * Format currency using comma or period for thousands, and period or comma for decimal, based on settings.
-     * 
+     *
      * @author [B. Wetherington] [<bwetherington@grokability.com>]
      * @since [v5.2]
      * @return Float
@@ -1359,11 +1359,11 @@ class Helper
             return true;
             Log::debug('app locked!');
         }
-        
+
         return false;
     }
 
-  
+
     /**
      * Conversion between units of measurement
      *
@@ -1381,7 +1381,7 @@ class Helper
         $output = $value * $srcFactor / $dstFactor;
         return ($round !== false) ? round($output, $round) : $output;
     }
-  
+
     /**
      * Get conversion factor from unit of measurement to mm
      *
