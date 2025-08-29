@@ -82,14 +82,30 @@
                                 {!! $errors->first('note', '<span class="alert-msg" aria-hidden="true"><i class="fas fa-times" aria-hidden="true"></i> :message</span>') !!}
                             </div>
                         </div>
-                        <x-redirect_submit_options
-                                index_route="components.index"
-                                :button_label="trans('general.checkin')"
-                                :options="[
-                                'index' => trans('admin/hardware/form.redirect_to_all', ['type' => trans('general.components')]),
-                                'item' => trans('admin/hardware/form.redirect_to_type', ['type' => trans('general.component')]),
-                               ]"
-                        />
+                        @if(isset($ticketId) && $ticketId)
+                          <input type="hidden" name="ticket_id" value="{{ $ticketId }}"
+                          <x-redirect_submit_options
+                                  index_route="components.index"
+                                  :button_label="trans('general.checkout')"
+
+                                  :options="[
+                                                'tickets.index' => 'Вернуться к заявкам',
+                                                'item' => trans('admin/hardware/form.redirect_to_type', ['type' => trans('general.component')]),
+                                                'target' => trans('admin/hardware/form.redirect_to_checked_out_to'),
+                                               ]"
+                          />
+                        @else
+                          <x-redirect_submit_options
+                                  index_route="components.index"
+                                  :button_label="trans('general.checkout')"
+
+                                  :options="[
+                                                'index' => trans('admin/hardware/form.redirect_to_all', ['type' => trans('general.components')]),
+                                                'item' => trans('admin/hardware/form.redirect_to_type', ['type' => trans('general.component')]),
+                                                'target' => trans('admin/hardware/form.redirect_to_checked_out_to'),
+                                               ]"
+                          />
+                        @endif
                     </div> <!-- /.box-->
             </form>
         </div> <!-- /.col-md-7-->

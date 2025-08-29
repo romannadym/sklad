@@ -75,7 +75,7 @@ class ComponentCheckoutController extends Controller
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function store(Request $request, $componentId)
-    {
+    { 
         // Check if the component exists
         if (!$component = Component::find($componentId)) {
             // Redirect to the component management page with error
@@ -245,7 +245,62 @@ class ComponentCheckoutController extends Controller
                 $i++;
             }
         }
+        //если запрос пришел из заявки на компонент
+        else if($request->get('assigned_qty') != $component->qty && $request->has('ticket_id'))
+        {
+            foreach($request->get('serial') as $key => $serial){
+                $componentNew = new Component();
+                $componentNew->name                   = $component->name;
+                $componentNew->category_id            = $component->category_id;
+                $componentNew->supplier_id            = $component->supplier_id;
+                $componentNew->location_id            = $component->location_id;
+                $componentNew->company_id             = $component->company_id;
+                $componentNew->serial                 = $serial;
+                $componentNew->qty                    = 1;
+                $componentNew->created_by             = auth()->id();
+                $componentNew->notes                  = $component->notes;
+                $componentNew->partnum                = $component->partnum;
+                $componentNew->status                 = $component->status;
+                $componentNew->customer               = $component->customer;
+                $componentNew->save();
+                if($componentNew->id)
+                {
+                    $component->qty = $component->qty - 1;
+                    $component->save();
 
+                    // Update the component data
+
+                    $componentNew->asset_id = $request->input('asset_id');
+                    $componentNew->assets()->attach($componentNew->id, [
+                        'component_id' => $componentNew->id,
+                        'created_by' => auth()->user()->id,
+                        'created_at' => date('Y-m-d H:i:s'),
+                        'assigned_qty' => 1,
+                        'asset_id' => $request->input('asset_id'),
+                        'note' => $request->input('note'),
+                        'ticketnum' => $request->input('ticketnum'),
+                        'assigned_to_user_id' => $request->input('assigned_to_user_id'),
+                    ]);
+                    ComponentCheckout::create([
+                        'component_id' => $componentNew->id,
+                        'assigned_qty' => 1,
+                        'asset_id' => $request->input('asset_id'),
+                        'note' => $request->input('note'),
+                        'ticketnum' => $request->input('ticketnum'),
+                        'assigned_to_user_id' => $request->input('assigned_to_user_id'),
+                    ]);
+                    event(new CheckoutableCheckedOut($componentNew, $asset, auth()->user(), $request->input('note')));
+                    unset($componentNew->asset_id);
+                }
+            }
+            $ticket_id = $request->input('ticket_id');
+            $ticket = Ticket::where('id', $ticket_id)->first();
+            if($ticket)
+            {
+              $ticket->component_id = $componentNew->id;
+              $ticket->save();
+            }
+        }
         else if($request->get('assigned_qty') != $component->qty)
         {
             foreach($request->get('serial') as $key => $serial){

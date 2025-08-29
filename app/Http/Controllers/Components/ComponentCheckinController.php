@@ -40,8 +40,8 @@ class ComponentCheckinController extends Controller
                     trans('admin/components/message.not_found'));
             }
             $this->authorize('checkin', $component);
-
-            return view('components/checkin', compact('component_assets', 'component', 'asset'));
+            $ticketId = request()->input('ticket_id');
+            return view('components/checkin', compact('component_assets', 'component', 'asset','ticketId'));
         }
 
         return redirect()->route('components.index')->with('error', trans('admin/components/messages.not_found'));
@@ -107,7 +107,7 @@ class ComponentCheckinController extends Controller
 
             session()->put(['redirect_option' => $request->get('redirect_option')]);
 
-            $ticket = Ticket::where('component_id', $component->id)->first();
+            $ticket = Ticket::where('component_id', $component->id)->where('id', $request->input('ticket_id'))->first();
             if($request->input('cancel') == 1 )
             {
               if($ticket)

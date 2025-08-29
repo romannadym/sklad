@@ -79,7 +79,7 @@
                 {{ trans('general.qty') }}
               </label>
               <div class="col-md-2 col-sm-5 col-xs-5">
-                <input class="form-control required col-md-12" {{ isset($ticketId) ? '' : '' }}  type="number" name="assigned_qty"  min="1" max="10" id="assigned_qty" value="{{ old('assigned_qty') ?? 1 }}" oninput="this.value = Math.min({{$component->remaining}}, Math.max(0, this.value))" />
+                <input class="form-control required col-md-12" {{ isset($ticketId) ? 'readonly ' : '' }}  type="number" name="assigned_qty"  min="1" max="10" id="assigned_qty" value="{{ old('assigned_qty') ?? 1 }}" oninput="this.value = Math.min({{$component->remaining}}, Math.max(0, this.value))" />
               </div>
               @if ($errors->first('assigned_qty'))
                 <div class="col-md-9 col-md-offset-3">
@@ -126,16 +126,29 @@
 
 
         </div> <!-- .BOX-BODY-->
-          <x-redirect_submit_options
-                  index_route="components.index"
-                  :button_label="trans('general.checkout')"
-                  :options="[
-                                'index' => trans('admin/hardware/form.redirect_to_all', ['type' => trans('general.components')]),
-                                'item' => trans('admin/hardware/form.redirect_to_type', ['type' => trans('general.component')]),
-                                'target' => trans('admin/hardware/form.redirect_to_checked_out_to'),
+          @if(isset($ticketId) && $ticketId)
+            <x-redirect_submit_options
+                    index_route="components.index"
+                    :button_label="trans('general.checkout')"
 
-                               ]"
-          />
+                    :options="[
+                                  'tickets.index' => 'Вернуться к заявкам',
+                                  'item' => trans('admin/hardware/form.redirect_to_type', ['type' => trans('general.component')]),
+                                  'target' => trans('admin/hardware/form.redirect_to_checked_out_to'),
+                                 ]"
+            />
+          @else
+            <x-redirect_submit_options
+                    index_route="components.index"
+                    :button_label="trans('general.checkout')"
+
+                    :options="[
+                                  'index' => trans('admin/hardware/form.redirect_to_all', ['type' => trans('general.components')]),
+                                  'item' => trans('admin/hardware/form.redirect_to_type', ['type' => trans('general.component')]),
+                                  'target' => trans('admin/hardware/form.redirect_to_checked_out_to'),
+                                 ]"
+            />
+          @endif
       </div> <!-- .box-default-->
     </form>
   </div> <!-- .col-md-9-->

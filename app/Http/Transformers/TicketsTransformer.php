@@ -43,13 +43,17 @@ class TicketsTransformer
               'name' => e($ticket->requester_name),
             ] : null,
             'sd_ticket_id' => e($ticket->sd_ticket_id),
-            'component' => ($component->id) ? [
+            'component' => ($component && $component->id) ? [
                 'id' => (int) $component->id,
                 'name' => e($component->name) . ' (P/n ' . e($component->partnum) . ')',
                 'checkin_id' => $component->assets()->where('asset_id', $ticket->asset_id)->first()->pivot->id ?? null
-            ] : null,
-            'serial' => ($component->serial) ? e($component->serial) : null,
-            'location' => ($component->location && $component->assets->isEmpty()) ? [
+            ] : [
+                'id' => (int) 0,
+                'name' => 'Компонент был удален из системы',
+                'checkin_id' => 0
+            ],
+            'serial' => ($component && $component->serial) ? e($component->serial) : null,
+            'location' => ($component && $component->location && $component->assets->isEmpty()) ? [
                       'id' => (int) $component->location->id,
                       'name' => e($component->location->name),
                   ] : null,
@@ -64,11 +68,11 @@ class TicketsTransformer
             ] : null,
             'created_at' => Helper::getFormattedDateObject($ticket->created_at, 'datetime'),
             'updated_at' => Helper::getFormattedDateObject($ticket->updated_at, 'datetime'),
-            'user_can_checkout' =>  ($component->numRemaining() > 0) ? 1 : 0,
+            'user_can_checkout' =>  ($component && $component->numRemaining() > 0) ? 1 : 0,
         ];
 
         $permissions_array['available_actions'] = [
-            'checkout' => Gate::allows('checkout', $component),
+            $ticket->status_id == 13 ? '' : 'checkout' => Gate::allows('checkout', $component),
             'checkin' => Gate::allows('checkin', $component),
         //    'update' => Gate::allows('update', Ticket::class),
             'delete' => Gate::allows('delete', Ticket::class),
