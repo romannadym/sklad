@@ -16,7 +16,7 @@
         {{ trans('button.actions') }}
           <span class="caret"></span>
       </button>
-      
+
       <ul class="dropdown-menu pull-right" role="menu22">
         @if ($component->assigned_to != '')
           @can('checkin', $component)
@@ -247,7 +247,7 @@
 
   <!-- side address column -->
   <div class="col-md-3">
-   
+
   @if ($component->image != '')
 <style>
    /* Стилизация слайдера */
@@ -281,11 +281,11 @@
 
 .navigation {
             position:relative;
-            
+
             width: 100%;
             display: flex;
             justify-content: space-between;
-            
+
         }
 
         .button {
@@ -302,8 +302,8 @@
         @foreach ($component->image as $index => $image)
             <div class="slide {{ $index === 0 ? 'active' : '' }}">
                 <img src="{{ Storage::disk('public')->url('components/' . e($image)) }}"
-                 class="d-block w-100 img-thumbnail" 
-                 data-target="#imageModal" 
+                 class="d-block w-100 img-thumbnail"
+                 data-target="#imageModal"
                  data-image="{{ Storage::disk('public')->url('components/' . e($image)) }}"
                  alt="{{ $component->name }}">
             </div>
@@ -324,7 +324,7 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="imageModalLabel">Просмотр изобоажения</h5>
+                <h5 class="modal-title" id="imageModalLabel">Просмотр изображения</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -342,7 +342,7 @@
     $(document).ready(function() {
         $('.slide img').on('click', function() {
             var imageSrc = $(this).data('image');
-            
+
             $('#modalImage').attr('src', imageSrc);
             $('#imageModal').modal('show');
         });

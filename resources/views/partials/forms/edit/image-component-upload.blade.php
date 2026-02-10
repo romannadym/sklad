@@ -6,11 +6,11 @@
         <div class="row">
             @foreach ($item->image as $index => $image)
                 <div class="col-md-3 image-wrapper" style="margin-bottom: 15px;">
-                    <img src="{{ Storage::disk('public')->url($image_path . e($image)) }}" 
-                         class="img-responsive thumbnail" 
-                         style="max-height: 200px; max-width: 200px; min-height: 200px; min-width: 200px; cursor: pointer;" 
-                         data-toggle="modal" 
-                         data-target="#imageModal" 
+                    <img src="{{ Storage::disk('public')->url($image_path . e($image)) }}"
+                         class="img-responsive thumbnail"
+                         style="max-height: 200px; max-width: 200px; min-height: 200px; min-width: 200px; cursor: pointer;"
+                         data-toggle="modal"
+                         data-target="#imageModal"
                          data-image="{{ Storage::disk('public')->url($image_path . e($image)) }}">
                     <label class="form-control">
                         {{ Form::checkbox('image_delete[]', $image, false, ['aria-label' => 'delete_image_' . $index]) }}
@@ -27,7 +27,7 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="imageModalLabel">Просмотр изобоажения</h5>
+                <h5 class="modal-title" id="imageModalLabel">Просмотр изображения</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -43,7 +43,7 @@
         $('.image-wrapper img').on('click', function() {
             var imageSrc = $(this).data('image');
             $('#modalImage').attr('src', imageSrc);
-           
+
         });
     });
 </script>
@@ -53,12 +53,12 @@
 <div class="form-group {{ $errors->has((isset($fieldname) ? $fieldname : 'image')) ? 'has-error' : '' }}">
     <label class="col-md-3 control-label" for="{{ (isset($fieldname) ? $fieldname : 'image') }}">{{ trans('general.image_upload') }}</label>
     <div class="col-md-9">
-        <input 
-            type="file" 
-            id="{{ (isset($fieldname) ? $fieldname : 'image') }}" 
-            name="{{ (isset($fieldname) ? $fieldname : 'image') }}[]" 
-            aria-label="{{ (isset($fieldname) ? $fieldname : 'image') }}" 
-            multiple 
+        <input
+            type="file"
+            id="{{ (isset($fieldname) ? $fieldname : 'image') }}"
+            name="{{ (isset($fieldname) ? $fieldname : 'image') }}[]"
+            aria-label="{{ (isset($fieldname) ? $fieldname : 'image') }}"
+            multiple
             class="form-control">
 
         <p class="help-block">
